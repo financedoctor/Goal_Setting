@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<title>FinScorecard — Section 2: Priority</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="hdr-top">
+      <div class="logo"><span class="logo-ic">◈</span><span>FinScorecard</span></div>
+      <button class="rst-btn" id="resetBtn">↺ Reset</button>
+    </div>
+    <nav class="tab-nav">
+      <a class="tbtn" href="index.html">🎯 Section 1 — Goals</a>
+      <a class="tbtn active" href="section2.html">🏆 Section 2 — Priority</a>
+    </nav>
+  </div>
+</header>
+
+<main class="main">
+  <div class="sec-hdr">
+    <div class="sec-hdr-left">
+      <h1>Section 2 — <em>Priority &amp; Allocation</em></h1>
+      <p>Select goals in priority order. Enter your SIP &amp; Lump Sum to see projections.</p>
+    </div>
+    <div class="surp">
+      <div class="surp-it">
+        <label>💰 SIP Surplus (₹/mo)</label>
+        <input type="number" id="sipSurplus" class="si" value="0" min="0" step="any" inputmode="numeric" placeholder="0"/>
+      </div>
+      <div class="surp-it">
+        <label>💰 Lump Sum Available (₹)</label>
+        <input type="number" id="lmSurplus" class="si" value="0" min="0" step="any" inputmode="numeric" placeholder="0"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="surp-warning" id="surpWarning">
+    <span class="warn-icon">⚠️</span>
+    <span id="surpWarningText"></span>
+  </div>
+
+  <p class="scroll-hint">← Scroll table horizontally →</p>
+
+  <div class="tscroll-pri">
+    <table class="pri-tbl">
+      <thead>
+        <tr>
+          <th style="width:44px;text-align:center">P#</th>
+          <th style="min-width:175px">Goal Name</th>
+          <th data-hide-mobile>Target<br>Month-Year</th>
+          <th class="th-calc">Req. SIP<br>₹/mo</th>
+          <th class="th-calc" data-hide-mobile>Req. LM<br>₹</th>
+          <th class="th-user">Your SIP<br>₹/mo</th>
+          <th class="th-user">Your LM<br>₹</th>
+          <th class="th-calc" data-hide-mobile>Projection<br>@ Maturity</th>
+          <th>Status</th>
+          <th class="th-calc">+SIP<br>Needed</th>
+          <th class="th-calc" data-hide-mobile>+LM<br>Needed</th>
+        </tr>
+      </thead>
+      <tbody id="priorityBody"></tbody>
+      <tfoot>
+        <tr class="tot-row">
+          <td colspan="5">TOTAL ALLOCATED</td>
+          <td id="allocSIP" class="tot-val">₹0</td>
+          <td id="allocLM"  class="tot-val">₹0</td>
+          <td colspan="4"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="pri-add-wrap">
+    <button class="add-row-btn" id="addPriBtn">+ Add Priority Row</button>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══ CONSTANTS & DEFAULTS ══ */
+const DEF_S = {inflation:6, r1:5, r2:8, r3:9, r4:11, r5:10, retMult:100000, retRate:6};
+
+const FIXED_GOALS = [
+  {id:'liquidity',  label:'Liquidity / Emergency Fund', isRet:false},
+  {id:'primary',    label:'Primary Residence',           isRet:false},
+  {id:'secondary',  label:'Secondary Residence / Plot',  isRet:false},
+  {id:'retirement', label:'Retirement Corpus',           isRet:true },
+];
+
+const LS_KEY = 'finsc_v5';
+
+function defState() {
+  return {
+    s: {...DEF_S},
+    fixedGoals: FIXED_GOALS.map(() => ({val:'', date:'Immediate', name:''})),
+    childGoals: [
+      {childName:'', eduVal:'', eduDate:'Immediate', marryVal:'', marryDate:'Immediate'},
+      {childName:'', eduVal:'', eduDate:'Immediate', marryVal:'', marryDate:'Immediate'},
+    ],
+    aspirationGoals: [
+      {name:'', val:'', date:'Immediate'},
+      {name:'', val:'', date:'Immediate'},
+      {name:'', val:'', date:'Immediate'},
+    ],
+    customGoals: [
+      {name:'', val:'', date:'Immediate'},
+      {name:'', val:'', date:'Immediate'},
+      {name:'', val:'', date:'Immediate'},
+    ],
+    pris: Array.from({length:10}, () => ({gid:'', sip:'', lm:''})),
+    sipSurplus:0, lmSurplus:0
+  };
+}
+
+let ST = loadST();
+
+function loadST() {
+  try {
+    const r = localStorage.getItem(LS_KEY);
+    if (!r) return defState();
+    const sv = JSON.parse(r);
+    const d  = defState();
+    return {
+      s: {...d.s,...(sv.s||{})},
+      fixedGoals: d.fixedGoals.map((g,i) => ({...g,...(sv.fixedGoals?.[i]||{})})),
+      childGoals: (sv.childGoals && sv.childGoals.length)
+        ? sv.childGoals.map(c => ({childName:'',eduVal:'',eduDate:'Immediate',marryVal:'',marryDate:'Immediate',...c}))
+        : d.childGoals,
+      aspirationGoals: (sv.aspirationGoals && sv.aspirationGoals.length)
+        ? sv.aspirationGoals.map(a => ({name:'',val:'',date:'Immediate',...a}))
+        : d.aspirationGoals,
+      customGoals: (sv.customGoals && sv.customGoals.length)
+        ? sv.customGoals.map(c => ({name:'',val:'',date:'Immediate',...c}))
+        : d.customGoals,
+      pris: sv.pris && sv.pris.length
+        ? sv.pris.map(p => ({gid:'',sip:'',lm:'',...p}))
+        : d.pris,
+      sipSurplus: sv.sipSurplus||0,
+      lmSurplus:  sv.lmSurplus ||0
+    };
+  } catch { return defState(); }
+}
+
+function saveST() { localStorage.setItem(LS_KEY, JSON.stringify(ST)); }
+
+/* ══ CALC ENGINE ══ */
+function parseMonths(raw) {
+  if (!raw || !raw.trim()) return 1;
+  const s = raw.trim();
+  if (s.toLowerCase() === 'immediate') return 1;
+  const MN = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+  const today = new Date(); today.setDate(1); today.setHours(0,0,0,0);
+  const m1 = s.match(/^([A-Za-z]{3})-(\d{4})$/);
+  if (m1) {
+    const mo = MN.indexOf(m1[1].toLowerCase());
+    if (mo === -1) return 0;
+    const t = new Date(+m1[2], mo, 1);
+    return Math.max(1, (t.getFullYear()-today.getFullYear())*12+(t.getMonth()-today.getMonth()));
+  }
+  const m2 = s.match(/^(\d{1,2})\/(\d{4})$/);
+  if (m2) {
+    const t = new Date(+m2[2], +m2[1]-1, 1);
+    return Math.max(1, (t.getFullYear()-today.getFullYear())*12+(t.getMonth()-today.getMonth()));
+  }
+  const m3 = s.match(/^(\d{4})-(\d{1,2})$/);
+  if (m3) {
+    const t = new Date(+m3[1], +m3[2]-1, 1);
+    return Math.max(1, (t.getFullYear()-today.getFullYear())*12+(t.getMonth()-today.getMonth()));
+  }
+  return 0;
+}
+
+function rRate(mo, s) {
+  if (!mo) return 0;
+  if (mo <= 12)  return s.r1/100;
+  if (mo <= 24)  return s.r2/100;
+  if (mo <= 36)  return s.r3/100;
+  if (mo <= 120) return s.r4/100;
+  return s.r5/100;
+}
+
+function FV(r,n,pmt,pv){if(!r)return -(pv+pmt*n);const f=Math.pow(1+r,n);return -(pv*f+pmt*((f-1)/r));}
+function PMT(r,n,pv,fv){fv=fv||0;if(!r)return -(pv+fv)/n;const f=Math.pow(1+r,n);return -(pv*f+fv)/((f-1)/r);}
+function PV(r,n,pmt,fv){fv=fv||0;if(!r)return -(fv+pmt*n);const f=Math.pow(1+r,n);return -(fv+pmt*((f-1)/r))/f;}
+function r500(v){return Math.max(1000, Math.round(v/500)*500);}
+
+function computeGoal(val, date, isRet, s) {
+  const mo = parseMonths(date);
+  const v  = parseFloat(val) || 0;
+  let target = null;
+  if (mo > 0 && v > 0) {
+    if (isRet) {
+      const mn = v * s.retMult;
+      const fn = FV(s.inflation/100/12, mo, 0, -mn);
+      target = (fn * 12) / (s.retRate / 100);
+    } else {
+      target = FV(s.inflation/100/12, mo, 0, -v);
+    }
+  }
+  const rt   = rRate(mo, s);
+  const rSIP = (target && mo > 0) ? r500(-PMT(rt/12, mo, 0, target)) : null;
+  const rLM  = (target && mo > 0) ? r500(-PV(rt/12, mo, 0, target))  : null;
+  return {mo, target, rSIP, rLM, rt};
+}
+
+function inr(v, d=0) {
+  if (v===null||v===undefined||isNaN(v)) return '—';
+  return '₹'+Number(v).toLocaleString('en-IN',{maximumFractionDigits:d,minimumFractionDigits:d});
+}
+function inrSh(v) {
+  if (!v||isNaN(v)||v===0) return '—';
+  if (v >= 1e7) return '₹'+(v/1e7).toFixed(2)+' Cr';
+  if (v >= 1e5) return '₹'+(v/1e5).toFixed(2)+' L';
+  return inr(v);
+}
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ══ BUILD GOAL MAP ══ */
+function buildGoalMap() {
+  const s = ST.s;
+  const gmap = {};
+
+  FIXED_GOALS.forEach((tmpl, i) => {
+    const g = ST.fixedGoals[i];
+    const c = computeGoal(g.val, g.date||'Immediate', tmpl.isRet, s);
+    gmap[tmpl.id] = {...c, label:tmpl.label, date:g.date||'Immediate'};
+  });
+
+  ST.childGoals.forEach((cg, ci) => {
+    const childLabel = cg.childName || `Child ${ci+1}`;
+    const cEdu = computeGoal(cg.eduVal, cg.eduDate||'Immediate', false, s);
+    gmap[`child${ci}_edu`]   = {...cEdu, label:`${childLabel} – Education`, date:cg.eduDate||'Immediate'};
+    const cMar = computeGoal(cg.marryVal, cg.marryDate||'Immediate', false, s);
+    gmap[`child${ci}_marry`] = {...cMar, label:`${childLabel} – Marriage`,  date:cg.marryDate||'Immediate'};
+  });
+
+  ST.aspirationGoals.forEach((ag, ai) => {
+    const c = computeGoal(ag.val, ag.date||'Immediate', false, s);
+    gmap[`asp${ai}`] = {...c, label:ag.name||`Aspiration Goal ${ai+1}`, date:ag.date||'Immediate'};
+  });
+
+  ST.customGoals.forEach((cg, ci) => {
+    const c = computeGoal(cg.val, cg.date||'Immediate', false, s);
+    gmap[`cust${ci}`] = {...c, label:cg.name||`Custom Goal ${ci+1}`, date:cg.date||'Immediate'};
+  });
+
+  return gmap;
+}
+
+/* ══ PRIORITY CALC ══ */
+function priCalc(pr, gmap, s) {
+  const NA = {proj:0, target:null, status:'na', addSIP:null, addLM:null};
+  if (!pr.gid) return NA;
+  const gd = gmap[pr.gid];
+  if (!gd || !gd.target || !gd.mo) return NA;
+  const {mo, target, rt} = gd;
+  const sip = parseFloat(pr.sip)||0;
+  const lm  = parseFloat(pr.lm) ||0;
+  const proj = FV(rt/12, mo, -sip, -lm);
+  const ok   = proj >= target;
+  let addSIP=null, addLM=null;
+  if (!ok) {
+    const g1 = target - FV(rt/12, mo, 0, -lm);
+    if (g1>0) addSIP = r500(-PMT(rt/12, mo, 0, g1));
+    const g2 = target - FV(rt/12, mo, -sip, 0);
+    if (g2>0) addLM  = r500(-PV(rt/12, mo, 0, g2));
+  }
+  return {proj, target, status: ok?'on':'off', addSIP, addLM};
+}
+
+/* ══ SURPLUS WARNING ══ */
+function updateSurplusWarning() {
+  const sipAvail = ST.sipSurplus || 0;
+  const lmAvail  = ST.lmSurplus  || 0;
+  let allocSIP = 0, allocLM = 0;
+  ST.pris.forEach(p => {
+    allocSIP += parseFloat(p.sip)||0;
+    allocLM  += parseFloat(p.lm) ||0;
+  });
+
+  const warnEl   = document.getElementById('surpWarning');
+  const warnText = document.getElementById('surpWarningText');
+  const parts    = [];
+  let isNoDeclare = false;
+
+  if (sipAvail === 0 && allocSIP > 0) {
+    parts.push(`You've entered ${inr(allocSIP)}/mo in SIP but haven't declared any SIP surplus above`);
+    isNoDeclare = true;
+  }
+  if (lmAvail === 0 && allocLM > 0) {
+    parts.push(`You've entered ${inr(allocLM)} as Lump Sum but haven't declared any Lump Sum surplus above`);
+    isNoDeclare = true;
+  }
+
+  if (!isNoDeclare) {
+    if (sipAvail > 0 && allocSIP > sipAvail) {
+      parts.push(`SIP allocated (${inr(allocSIP)}/mo) exceeds your surplus by ${inr(allocSIP - sipAvail)}/mo`);
+    }
+    if (lmAvail > 0 && allocLM > lmAvail) {
+      parts.push(`Lump Sum allocated (${inr(allocLM)}) exceeds your surplus by ${inr(allocLM - lmAvail)}`);
+    }
+  }
+
+  if (parts.length > 0) {
+    warnEl.style.background  = isNoDeclare ? '#fff0e6' : '#fff3cd';
+    warnEl.style.borderColor = isNoDeclare ? '#e07030' : '#e8a800';
+    warnEl.style.color       = isNoDeclare ? '#7a2e00' : '#7a5300';
+    warnText.innerHTML = parts.map(p => `<span>${p}</span>`).join('<br>');
+    warnEl.classList.add('visible');
+  } else {
+    warnEl.classList.remove('visible');
+  }
+}
+
+/* ══ BUILD PRIORITY TABLE ══ */
+function buildPriority() {
+  const s     = ST.s;
+  const tbody = document.getElementById('priorityBody');
+  const gmap  = buildGoalMap();
+  const available = Object.entries(gmap)
+    .filter(([,gd]) => gd.target)
+    .map(([id,gd]) => ({id, label:gd.label}));
+
+  const pickedSet = new Set(ST.pris.map(p=>p.gid).filter(Boolean));
+  let allocSIP=0, allocLM=0;
+  const frag = document.createDocumentFragment();
+
+  ST.pris.forEach((pr, i) => {
+    const pd = priCalc(pr, gmap, s);
+    allocSIP += parseFloat(pr.sip)||0;
+    allocLM  += parseFloat(pr.lm) ||0;
+
+    const gd = pr.gid ? gmap[pr.gid] : null;
+
+    let opts = `<option value="">— select goal —</option>`;
+    available.forEach(ag => {
+      if (pickedSet.has(ag.id) && ag.id !== pr.gid) return;
+      opts += `<option value="${ag.id}"${ag.id===pr.gid?' selected':''}>${esc(ag.label)}</option>`;
+    });
+
+    const tDate = gd ? gd.date : '—';
+    const rSIPd = gd && gd.rSIP ? inr(gd.rSIP) : '—';
+    const rLMd  = gd && gd.rLM  ? inr(gd.rLM)  : '—';
+
+    let badge = `<span class="bdg bdg-na">—</span>`;
+    if (pd.status==='on')  badge = `<span class="bdg bdg-on">✅ On Track</span>`;
+    if (pd.status==='off') badge = `<span class="bdg bdg-off">⚡ More</span>`;
+
+    let projHtml = '<span class="cz">—</span>';
+    if (pd.proj && pd.target) {
+      const pct = (pd.proj/pd.target*100).toFixed(0);
+      const col = pd.status==='on' ? 'var(--green)' : 'var(--amber)';
+      projHtml = `<strong style="color:${col}">${inrSh(pd.proj)}</strong>
+        <small style="display:block;color:var(--ink-lt);font-size:.68rem">Tgt: ${inrSh(pd.target)} (${pct}%)</small>`;
+    }
+
+    const hasUserInput = (parseFloat(pr.sip)||0) > 0 || (parseFloat(pr.lm)||0) > 0;
+    const addSIP = hasUserInput && pd.addSIP
+      ? `<span style="color:var(--rose);font-weight:600;font-size:.76rem">${inr(pd.addSIP)}/mo</span>`
+      : (hasUserInput && !pd.addSIP ? '<span class="cz">—</span>' : '<span class="cz" style="opacity:.3">—</span>');
+    const addLM  = hasUserInput && pd.addLM
+      ? `<span style="color:var(--rose);font-weight:600;font-size:.76rem">${inr(pd.addLM)}</span>`
+      : (hasUserInput && !pd.addLM ? '<span class="cz">—</span>' : '<span class="cz" style="opacity:.3">—</span>');
+
+    const sipNoSurplusCls = ((parseFloat(pr.sip)||0) > 0 && (ST.sipSurplus||0) === 0) ? ' no-surplus' : '';
+    const lmNoSurplusCls  = ((parseFloat(pr.lm) ||0) > 0 && (ST.lmSurplus ||0) === 0) ? ' no-surplus' : '';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="text-align:center"><strong style="color:var(--gold);font-size:.86rem">P${i+1}</strong></td>
+      <td><select class="ti" data-pidx="${i}" data-pfield="gid" style="max-width:188px">${opts}</select></td>
+      <td data-hide-mobile style="font-size:.76rem;color:var(--ink-lt)">${tDate}</td>
+      <td style="font-size:.76rem;color:var(--teal);font-weight:600">${rSIPd}</td>
+      <td data-hide-mobile style="font-size:.76rem;color:var(--teal);font-weight:600">${rLMd}</td>
+      <td><input class="ti${sipNoSurplusCls}" type="number" data-pidx="${i}" data-pfield="sip"
+           value="${pr.sip||''}" min="0" step="500" placeholder="0" style="max-width:105px" autocomplete="off" inputmode="decimal"></td>
+      <td><input class="ti${lmNoSurplusCls}" type="number" data-pidx="${i}" data-pfield="lm"
+           value="${pr.lm||''}" min="0" step="1000" placeholder="0" style="max-width:105px" autocomplete="off" inputmode="decimal"></td>
+      <td data-hide-mobile>${projHtml}</td>
+      <td>${badge}</td>
+      <td>${addSIP}</td>
+      <td data-hide-mobile>${addLM}</td>
+    `;
+    frag.appendChild(tr);
+  });
+
+  tbody.innerHTML = '';
+  tbody.appendChild(frag);
+  document.getElementById('allocSIP').textContent = inr(allocSIP);
+  document.getElementById('allocLM').textContent  = inr(allocLM);
+  updateSurplusWarning();
+  applyMobileColHide();
+}
+
+function applyMobileColHide() {
+  const isMobile = window.innerWidth <= 767;
+  document.querySelectorAll('.pri-tbl thead th[data-hide-mobile]').forEach(el => {
+    el.style.display = isMobile ? 'none' : '';
+  });
+  document.querySelectorAll('.pri-tbl tbody td[data-hide-mobile]').forEach(el => {
+    el.style.display = isMobile ? 'none' : '';
+  });
+}
+
+/* ══ TARGETED UPDATE ══ */
+function updatePriorityCalcCells() {
+  const s    = ST.s;
+  const gmap = buildGoalMap();
+  let allocSIP=0, allocLM=0;
+
+  const rows = document.querySelectorAll('#priorityBody tr');
+  rows.forEach((tr, i) => {
+    if (i >= ST.pris.length) return;
+    const pr = ST.pris[i];
+    allocSIP += parseFloat(pr.sip)||0;
+    allocLM  += parseFloat(pr.lm) ||0;
+    const pd = priCalc(pr, gmap, s);
+    const tds = tr.querySelectorAll('td');
+    if (tds.length < 11) return;
+
+    let projHtml = '<span class="cz">—</span>';
+    if (pd.proj && pd.target) {
+      const pct = (pd.proj/pd.target*100).toFixed(0);
+      const col = pd.status==='on' ? 'var(--green)' : 'var(--amber)';
+      projHtml = `<strong style="color:${col}">${inrSh(pd.proj)}</strong>
+        <small style="display:block;color:var(--ink-lt);font-size:.68rem">Tgt: ${inrSh(pd.target)} (${pct}%)</small>`;
+    }
+    tds[7].innerHTML = projHtml;
+
+    let badge = `<span class="bdg bdg-na">—</span>`;
+    if (pd.status==='on')  badge = `<span class="bdg bdg-on">✅ On Track</span>`;
+    if (pd.status==='off') badge = `<span class="bdg bdg-off">⚡ More</span>`;
+    tds[8].innerHTML = badge;
+
+    const hasUserInput = (parseFloat(pr.sip)||0) > 0 || (parseFloat(pr.lm)||0) > 0;
+    tds[9].innerHTML = hasUserInput && pd.addSIP
+      ? `<span style="color:var(--rose);font-weight:600;font-size:.76rem">${inr(pd.addSIP)}/mo</span>`
+      : (hasUserInput ? '<span class="cz">—</span>' : '<span class="cz" style="opacity:.3">—</span>');
+    tds[10].innerHTML = hasUserInput && pd.addLM
+      ? `<span style="color:var(--rose);font-weight:600;font-size:.76rem">${inr(pd.addLM)}</span>`
+      : (hasUserInput ? '<span class="cz">—</span>' : '<span class="cz" style="opacity:.3">—</span>');
+
+    const sipInput = tds[5].querySelector('input');
+    const lmInput  = tds[6].querySelector('input');
+    if (sipInput) sipInput.classList.toggle('no-surplus', (parseFloat(pr.sip)||0) > 0 && (ST.sipSurplus||0) === 0);
+    if (lmInput)  lmInput.classList.toggle('no-surplus',  (parseFloat(pr.lm) ||0) > 0 && (ST.lmSurplus ||0) === 0);
+  });
+
+  document.getElementById('allocSIP').textContent = inr(allocSIP);
+  document.getElementById('allocLM').textContent  = inr(allocLM);
+  updateSurplusWarning();
+}
+
+/* ══ EVENTS ══ */
+document.getElementById('sipSurplus').addEventListener('input', e => {
+  ST.sipSurplus = parseFloat(e.target.value)||0;
+  saveST(); updatePriorityCalcCells();
+});
+document.getElementById('lmSurplus').addEventListener('input', e => {
+  ST.lmSurplus = parseFloat(e.target.value)||0;
+  saveST(); updatePriorityCalcCells();
+});
+
+document.getElementById('priorityBody').addEventListener('input', e => {
+  const el = e.target, pi = +el.dataset.pidx, pf = el.dataset.pfield;
+  if (isNaN(pi) || !pf) return;
+  ST.pris[pi][pf] = el.value;
+  updatePriorityCalcCells();
+  saveST();
+});
+
+document.getElementById('priorityBody').addEventListener('change', e => {
+  const el = e.target, pi = +el.dataset.pidx, pf = el.dataset.pfield;
+  if (isNaN(pi) || !pf || pf !== 'gid') return;
+  ST.pris[pi].sip = '';
+  ST.pris[pi].lm  = '';
+  ST.pris[pi].gid = el.value;
+  buildPriority();
+  saveST();
+});
+
+document.getElementById('addPriBtn').addEventListener('click', () => {
+  ST.pris.push({gid:'', sip:'', lm:''});
+  buildPriority();
+  saveST();
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (!confirm('Reset ALL data to defaults? This will also clear Section 1. Cannot be undone.')) return;
+  localStorage.removeItem(LS_KEY);
+  ST = defState();
+  document.getElementById('sipSurplus').value = 0;
+  document.getElementById('lmSurplus').value  = 0;
+  buildPriority();
+  toast('All data reset to defaults.');
+});
+
+let _resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(_resizeTimer);
+  _resizeTimer = setTimeout(applyMobileColHide, 120);
+});
+
+/* ══ TOAST ══ */
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* ══ INIT ══ */
+document.getElementById('sipSurplus').value = ST.sipSurplus;
+document.getElementById('lmSurplus').value  = ST.lmSurplus;
+buildPriority();
+</script>
+</body>
+</html>
