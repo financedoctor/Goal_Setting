@@ -39,18 +39,18 @@
         <tr>
           <th style="width:28px">#</th>
           <th>Goal</th>
-          <th style="min-width:110px">Child / Name</th>
-          <th class="th-user" style="min-width:120px">
+          <th style="min-width:110px">Child / Custom Name<br><span style="font-weight:400;opacity:.85;font-style:normal;font-size:.65rem">(updates dropdown)</span></th>
+          <th class="th-user" style="min-width:130px">
             Current Value<br>
-            <span style="font-weight:400;opacity:.85;font-style:normal;font-size:.65rem">₹ for goals · units* for retirement</span>
+            <span style="font-weight:400;opacity:.85;font-style:normal;font-size:.65rem">(₹ or units*)</span>
           </th>
           <th class="th-user" style="min-width:135px">
             Target Month-Year<br>
             <span style="font-weight:400;opacity:.85;font-style:normal;font-size:.65rem">Jan-2035 or Immediate</span>
           </th>
-          <th class="th-calc">Target Amount<br><span style="font-weight:400;opacity:.85;font-size:.65rem">@ Inflation</span></th>
-          <th class="th-calc">Req. SIP<br><span style="font-weight:400;opacity:.85;font-size:.65rem">₹/mo</span></th>
-          <th class="th-calc">Req. Lump Sum<br><span style="font-weight:400;opacity:.85;font-size:.65rem">₹</span></th>
+          <th class="th-calc">Target Amount (₹)<br><span style="font-weight:400;opacity:.85;font-size:.65rem">@ Inflation</span></th>
+          <th class="th-calc">Required SIP<br><span style="font-weight:400;opacity:.85;font-size:.65rem">(₹/month)</span></th>
+          <th class="th-calc">Required Lump Sum<br><span style="font-weight:400;opacity:.85;font-size:.65rem">(₹)</span></th>
           <th style="width:36px"></th>
         </tr>
       </thead>
@@ -86,20 +86,20 @@ const LS_KEY = 'finsc_v5';
 function defState() {
   return {
     s: {...DEF_S},
-    fixedGoals: FIXED_GOALS.map(() => ({val:'', date:'Immediate', name:''})),
+    fixedGoals: FIXED_GOALS.map((g,i) => ({val:'', date: i===0 ? 'Immediate' : '', name:''})),
     childGoals: [
-      {childName:'', eduVal:'', eduDate:'Immediate', marryVal:'', marryDate:'Immediate'},
-      {childName:'', eduVal:'', eduDate:'Immediate', marryVal:'', marryDate:'Immediate'},
+      {childName:'', eduVal:'', eduDate:'', marryVal:'', marryDate:''},
+      {childName:'', eduVal:'', eduDate:'', marryVal:'', marryDate:''},
     ],
     aspirationGoals: [
-      {name:'', val:'', date:'Immediate'},
-      {name:'', val:'', date:'Immediate'},
-      {name:'', val:'', date:'Immediate'},
+      {name:'', val:'', date:''},
+      {name:'', val:'', date:''},
+      {name:'', val:'', date:''},
     ],
     customGoals: [
-      {name:'', val:'', date:'Immediate'},
-      {name:'', val:'', date:'Immediate'},
-      {name:'', val:'', date:'Immediate'},
+      {name:'', val:'', date:''},
+      {name:'', val:'', date:''},
+      {name:'', val:'', date:''},
     ],
     pris: Array.from({length:10}, () => ({gid:'', sip:'', lm:''})),
     sipSurplus:0, lmSurplus:0
@@ -116,15 +116,19 @@ function loadST() {
     const d  = defState();
     return {
       s: {...d.s,...(sv.s||{})},
-      fixedGoals: d.fixedGoals.map((g,i) => ({...g,...(sv.fixedGoals?.[i]||{})})),
+      fixedGoals: d.fixedGoals.map((g,i) => {
+        const merged = {...g,...(sv.fixedGoals?.[i]||{})};
+        if (i === 0) merged.date = 'Immediate'; // Liquidity always Immediate
+        return merged;
+      }),
       childGoals: (sv.childGoals && sv.childGoals.length)
-        ? sv.childGoals.map(c => ({childName:'',eduVal:'',eduDate:'Immediate',marryVal:'',marryDate:'Immediate',...c}))
+        ? sv.childGoals.map(c => ({childName:'',eduVal:'',eduDate:'',marryVal:'',marryDate:'',...c}))
         : d.childGoals,
       aspirationGoals: (sv.aspirationGoals && sv.aspirationGoals.length)
-        ? sv.aspirationGoals.map(a => ({name:'',val:'',date:'Immediate',...a}))
+        ? sv.aspirationGoals.map(a => ({name:'',val:'',date:'',...a}))
         : d.aspirationGoals,
       customGoals: (sv.customGoals && sv.customGoals.length)
-        ? sv.customGoals.map(c => ({name:'',val:'',date:'Immediate',...c}))
+        ? sv.customGoals.map(c => ({name:'',val:'',date:'',...c}))
         : d.customGoals,
       pris: sv.pris && sv.pris.length
         ? sv.pris.map(p => ({gid:'',sip:'',lm:'',...p}))
@@ -232,23 +236,27 @@ function updateCalcCells() {
     const gid = tr.dataset.gid;
     if (!gid) return;
 
-    let val='', date='Immediate', isRet=false;
+    let val='', date='', isRet=false;
 
     if (['liquidity','primary','secondary','retirement'].includes(gid)) {
       const fi = FIXED_GOALS.findIndex(g => g.id === gid);
-      if (fi >= 0) { val = ST.fixedGoals[fi].val; date = ST.fixedGoals[fi].date||'Immediate'; isRet = FIXED_GOALS[fi].isRet; }
+      if (fi >= 0) {
+        val = ST.fixedGoals[fi].val;
+        date = (fi === 0) ? 'Immediate' : ST.fixedGoals[fi].date; // liquidity always Immediate
+        isRet = FIXED_GOALS[fi].isRet;
+      }
     } else if (gid.match(/^child(\d+)_edu$/)) {
       const ci = parseInt(gid.match(/^child(\d+)/)[1]);
-      if (ST.childGoals[ci]) { val = ST.childGoals[ci].eduVal; date = ST.childGoals[ci].eduDate||'Immediate'; }
+      if (ST.childGoals[ci]) { val = ST.childGoals[ci].eduVal; date = ST.childGoals[ci].eduDate; }
     } else if (gid.match(/^child(\d+)_marry$/)) {
       const ci = parseInt(gid.match(/^child(\d+)/)[1]);
-      if (ST.childGoals[ci]) { val = ST.childGoals[ci].marryVal; date = ST.childGoals[ci].marryDate||'Immediate'; }
+      if (ST.childGoals[ci]) { val = ST.childGoals[ci].marryVal; date = ST.childGoals[ci].marryDate; }
     } else if (gid.match(/^asp(\d+)$/)) {
       const ai = parseInt(gid.match(/^asp(\d+)/)[1]);
-      if (ST.aspirationGoals[ai]) { val = ST.aspirationGoals[ai].val; date = ST.aspirationGoals[ai].date||'Immediate'; }
+      if (ST.aspirationGoals[ai]) { val = ST.aspirationGoals[ai].val; date = ST.aspirationGoals[ai].date; }
     } else if (gid.match(/^cust(\d+)$/)) {
       const ci = parseInt(gid.match(/^cust(\d+)/)[1]);
-      if (ST.customGoals[ci]) { val = ST.customGoals[ci].val; date = ST.customGoals[ci].date||'Immediate'; }
+      if (ST.customGoals[ci]) { val = ST.customGoals[ci].val; date = ST.customGoals[ci].date; }
     }
 
     const {mo, target, rSIP, rLM} = computeGoal(val, date, isRet, s);
@@ -259,7 +267,7 @@ function updateCalcCells() {
     if (tds.length < 8) return;
 
     const tgtTd = tds[5];
-    if (!val && !date) {
+    if (!val) {
       tgtTd.innerHTML = '<span class="cz">—</span>';
     } else if (!target) {
       tgtTd.innerHTML = '<span class="warn-cell">Enter valid date</span>';
@@ -305,7 +313,7 @@ function buildGoals() {
     const {mo, target, rSIP, rLM} = computeGoal(val, date, isRet, s);
     if (rSIP) tSIP += rSIP;
     if (rLM)  tLM  += rLM;
-    const tgtHtml = !val && !date
+    const tgtHtml = !val
       ? `<span class="cz">—</span>`
       : !target
         ? `<span class="warn-cell">Enter valid date</span>`
@@ -325,9 +333,16 @@ function buildGoals() {
   FIXED_GOALS.forEach((tmpl, i) => {
     rowNum++;
     const g = ST.fixedGoals[i];
-    const {tgtHtml, sipHtml, lmHtml} = calcCells(g.val, g.date||'Immediate', tmpl.isRet);
+    const {tgtHtml, sipHtml, lmHtml} = calcCells(g.val, g.date, tmpl.isRet);
     const tr = document.createElement('tr');
     tr.dataset.gid = tmpl.id;
+
+    // Liquidity goal: date is permanently locked to "Immediate"
+    const dateCell = (i === 0)
+      ? `<span style="display:inline-flex;align-items:center;gap:.35rem;background:#e8f5e9;border:1.5px solid #43a047;border-radius:6px;padding:.28rem .6rem;font-size:.75rem;font-weight:700;color:#1b5e20;white-space:nowrap;">🔒 Immediate</span>`
+      : `<input class="ti" data-section="fixed" data-idx="${i}" data-field="date"
+          value="${esc(g.date)}" placeholder="Jan-2035 / Immediate" style="max-width:138px" autocomplete="off">`;
+
     tr.innerHTML = `
       <td style="color:var(--ink-lt);font-size:.7rem;text-align:center">${rowNum}</td>
       <td><strong style="font-size:.8rem">${esc(tmpl.label)}</strong></td>
@@ -338,8 +353,7 @@ function buildGoals() {
           placeholder="${tmpl.isRet?'units':'₹ amount'}" style="max-width:120px" autocomplete="off" inputmode="decimal">
         ${hintHtml(g.val, tmpl.isRet)}
       </td>
-      <td><input class="ti" data-section="fixed" data-idx="${i}" data-field="date"
-          value="${esc(g.date||'Immediate')}" placeholder="Jan-2035 / Immediate" style="max-width:138px" autocomplete="off"></td>
+      <td>${dateCell}</td>
       <td>${tgtHtml}</td>
       <td>${sipHtml}</td>
       <td>${lmHtml}</td>
@@ -355,7 +369,7 @@ function buildGoals() {
     const delBtn = `<button class="del-btn" data-section="child" data-idx="${ci}" title="Remove child">✕</button>`;
 
     rowNum++;
-    const {tgtHtml:etgt, sipHtml:esip, lmHtml:elm} = calcCells(cg.eduVal, cg.eduDate||'Immediate', false);
+    const {tgtHtml:etgt, sipHtml:esip, lmHtml:elm} = calcCells(cg.eduVal, cg.eduDate, false);
     const eduTr = document.createElement('tr');
     eduTr.dataset.gid = `child${ci}_edu`;
     eduTr.innerHTML = `
@@ -369,14 +383,14 @@ function buildGoals() {
         ${hintHtml(cg.eduVal, false)}
       </td>
       <td><input class="ti" data-section="child" data-idx="${ci}" data-field="eduDate"
-          value="${esc(cg.eduDate||'Immediate')}" placeholder="Jan-2035 / Immediate" style="max-width:138px" autocomplete="off"></td>
+          value="${esc(cg.eduDate)}" placeholder="Jan-2035 / Immediate" style="max-width:138px" autocomplete="off"></td>
       <td>${etgt}</td><td>${esip}</td><td>${elm}</td>
       <td>${delBtn}</td>
     `;
     frag.appendChild(eduTr);
 
     rowNum++;
-    const {tgtHtml:mtgt, sipHtml:msip, lmHtml:mlm} = calcCells(cg.marryVal, cg.marryDate||'Immediate', false);
+    const {tgtHtml:mtgt, sipHtml:msip, lmHtml:mlm} = calcCells(cg.marryVal, cg.marryDate, false);
     const marTr = document.createElement('tr');
     marTr.dataset.gid = `child${ci}_marry`;
     marTr.innerHTML = `
@@ -389,7 +403,7 @@ function buildGoals() {
         ${hintHtml(cg.marryVal, false)}
       </td>
       <td><input class="ti" data-section="child" data-idx="${ci}" data-field="marryDate"
-          value="${esc(cg.marryDate||'Immediate')}" placeholder="Jan-2035 / Immediate" style="max-width:138px" autocomplete="off"></td>
+          value="${esc(cg.marryDate)}" placeholder="Jan-2035 / Immediate" style="max-width:138px" autocomplete="off"></td>
       <td>${mtgt}</td><td>${msip}</td><td>${mlm}</td>
       <td></td>
     `;
@@ -401,7 +415,7 @@ function buildGoals() {
 
   ST.aspirationGoals.forEach((ag, ai) => {
     rowNum++;
-    const {tgtHtml, sipHtml, lmHtml} = calcCells(ag.val, ag.date||'Immediate', false);
+    const {tgtHtml, sipHtml, lmHtml} = calcCells(ag.val, ag.date, false);
     const tr = document.createElement('tr');
     tr.dataset.gid = `asp${ai}`;
     tr.innerHTML = `
@@ -415,7 +429,7 @@ function buildGoals() {
         ${hintHtml(ag.val, false)}
       </td>
       <td><input class="ti" data-section="aspiration" data-idx="${ai}" data-field="date"
-          value="${esc(ag.date||'Immediate')}" placeholder="Jan-2035 / Immediate" style="max-width:138px" autocomplete="off"></td>
+          value="${esc(ag.date)}" placeholder="Jan-2035 / Immediate" style="max-width:138px" autocomplete="off"></td>
       <td>${tgtHtml}</td><td>${sipHtml}</td><td>${lmHtml}</td>
       <td><button class="del-btn" data-section="aspiration" data-idx="${ai}" title="Remove">✕</button></td>
     `;
@@ -427,7 +441,7 @@ function buildGoals() {
 
   ST.customGoals.forEach((cg, ci) => {
     rowNum++;
-    const {tgtHtml, sipHtml, lmHtml} = calcCells(cg.val, cg.date||'Immediate', false);
+    const {tgtHtml, sipHtml, lmHtml} = calcCells(cg.val, cg.date, false);
     const tr = document.createElement('tr');
     tr.dataset.gid = `cust${ci}`;
     tr.innerHTML = `
@@ -441,7 +455,7 @@ function buildGoals() {
         ${hintHtml(cg.val, false)}
       </td>
       <td><input class="ti" data-section="custom" data-idx="${ci}" data-field="date"
-          value="${esc(cg.date||'Immediate')}" placeholder="Jan-2035 / Immediate" style="max-width:138px" autocomplete="off"></td>
+          value="${esc(cg.date)}" placeholder="Jan-2035 / Immediate" style="max-width:138px" autocomplete="off"></td>
       <td>${tgtHtml}</td><td>${sipHtml}</td><td>${lmHtml}</td>
       <td><button class="del-btn" data-section="custom" data-idx="${ci}" title="Remove">✕</button></td>
     `;
@@ -453,6 +467,7 @@ function buildGoals() {
   tbody.appendChild(frag);
   document.getElementById('totalSIP').textContent = inr(tSIP);
   document.getElementById('totalLM').textContent  = inr(tLM);
+  applyAllDateLocks();
 }
 
 function makeGroupHeader(label, colspan) {
@@ -468,6 +483,55 @@ function makeAddRow(section, btnLabel) {
   return tr;
 }
 
+/* ══ DATE LOCK — "Immediate" locks the field ══ */
+function applyDateLockState(input) {
+  const v = (input.value || '').trim();
+  const isImm = v.toLowerCase() === 'immediate';
+  if (isImm) {
+    input.readOnly = true;
+    input.style.background    = '#e8f5e9';
+    input.style.borderColor   = '#43a047';
+    input.style.color         = '#1b5e20';
+    input.style.fontWeight    = '700';
+    input.style.cursor        = 'not-allowed';
+    input.title               = 'Locked to Immediate — clear to change';
+    // Show a small unlock affordance via a wrapper if not already there
+    if (!input.nextElementSibling || !input.nextElementSibling.classList.contains('imm-unlock')) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'imm-unlock';
+      btn.textContent = '✕';
+      btn.title = 'Unlock / clear';
+      btn.style.cssText = 'margin-left:4px;background:none;border:1px solid #43a047;color:#1b5e20;border-radius:4px;cursor:pointer;font-size:.7rem;padding:2px 6px;vertical-align:middle;line-height:1;';
+      btn.addEventListener('click', () => {
+        input.readOnly = false;
+        input.value = '';
+        input.style.cssText = '';
+        input.title = '';
+        btn.remove();
+        // Trigger input event to recalc
+        input.dispatchEvent(new Event('input', {bubbles:true}));
+        input.focus();
+      });
+      input.after(btn);
+    }
+  } else {
+    input.readOnly = false;
+    input.style.background  = '';
+    input.style.borderColor = '';
+    input.style.color       = '';
+    input.style.fontWeight  = '';
+    input.style.cursor      = '';
+    input.title             = '';
+    const btn = input.nextElementSibling;
+    if (btn && btn.classList.contains('imm-unlock')) btn.remove();
+  }
+}
+
+function applyAllDateLocks() {
+  document.querySelectorAll('#goalsBody input[data-field="date"], #goalsBody input[data-field="eduDate"], #goalsBody input[data-field="marryDate"]').forEach(applyDateLockState);
+}
+
 /* ══ EVENTS ══ */
 document.getElementById('goalsBody').addEventListener('input', e => {
   const el = e.target;
@@ -476,10 +540,18 @@ document.getElementById('goalsBody').addEventListener('input', e => {
   const field = el.dataset.field;
   if (!sec || isNaN(idx) || !field) return;
 
-  if (sec === 'fixed')       ST.fixedGoals[idx][field]       = el.value;
+  if (sec === 'fixed') {
+    if (idx === 0 && field === 'date') return; // Liquidity date is permanently Immediate
+    ST.fixedGoals[idx][field] = el.value;
+  }
   else if (sec === 'child')  ST.childGoals[idx][field]        = el.value;
   else if (sec === 'aspiration') ST.aspirationGoals[idx][field] = el.value;
   else if (sec === 'custom') ST.customGoals[idx][field]       = el.value;
+
+  // Lock date fields when user types "Immediate"
+  if (field === 'date' || field === 'eduDate' || field === 'marryDate') {
+    applyDateLockState(el);
+  }
 
   updateCalcCells();
   saveST();
@@ -489,9 +561,9 @@ document.getElementById('goalsBody').addEventListener('click', e => {
   const addBtn = e.target.closest('[data-addsection]');
   if (addBtn) {
     const sec = addBtn.dataset.addsection;
-    if (sec === 'child')       ST.childGoals.push({childName:'', eduVal:'', eduDate:'Immediate', marryVal:'', marryDate:'Immediate'});
-    else if (sec === 'aspiration') ST.aspirationGoals.push({name:'', val:'', date:'Immediate'});
-    else if (sec === 'custom') ST.customGoals.push({name:'', val:'', date:'Immediate'});
+    if (sec === 'child')       ST.childGoals.push({childName:'', eduVal:'', eduDate:'', marryVal:'', marryDate:''});
+    else if (sec === 'aspiration') ST.aspirationGoals.push({name:'', val:'', date:''});
+    else if (sec === 'custom') ST.customGoals.push({name:'', val:'', date:''});
     buildGoals(); saveST(); return;
   }
 
@@ -531,6 +603,7 @@ function toast(msg) {
 
 /* ══ INIT ══ */
 buildGoals();
+applyAllDateLocks();
 </script>
 </body>
 </html>

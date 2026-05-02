@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="css/style.css">
-
 </head>
 <body>
 
@@ -32,11 +31,11 @@
     </div>
     <div class="surp">
       <div class="surp-it">
-        <label>💰 SIP Surplus (₹/mo)</label>
+        <label>💰 Monthly SIP Surplus (₹)</label>
         <input type="number" id="sipSurplus" class="si" value="0" min="0" step="any" inputmode="numeric" placeholder="0"/>
       </div>
       <div class="surp-it">
-        <label>💰 Lump Sum Available (₹)</label>
+        <label>💰 Lump Sum Available to Deploy (₹)</label>
         <input type="number" id="lmSurplus" class="si" value="0" min="0" step="any" inputmode="numeric" placeholder="0"/>
       </div>
     </div>
@@ -53,17 +52,17 @@
     <table class="pri-tbl">
       <thead>
         <tr>
-          <th style="width:44px;text-align:center">P#</th>
-          <th style="min-width:175px">Goal Name</th>
-          <th data-hide-mobile>Target<br>Month-Year</th>
-          <th class="th-calc">Req. SIP<br>₹/mo</th>
-          <th class="th-calc" data-hide-mobile>Req. LM<br>₹</th>
-          <th class="th-user">Your SIP<br>₹/mo</th>
-          <th class="th-user">Your LM<br>₹</th>
-          <th class="th-calc" data-hide-mobile>Projection<br>@ Maturity</th>
-          <th>Status</th>
-          <th class="th-calc">+SIP<br>Needed</th>
-          <th class="th-calc" data-hide-mobile>+LM<br>Needed</th>
+          <th style="width:60px;text-align:center">Priority<br><span style="font-weight:400;opacity:.85;font-size:.65rem">(1=Highest)</span></th>
+          <th style="min-width:175px">Goal Name<br><span style="font-weight:400;opacity:.85;font-size:.65rem">(select from dropdown)</span></th>
+          <th style="min-width:110px">Target<br>Month-Year</th>
+          <th class="th-calc" style="min-width:110px">Required SIP<br><span style="font-weight:400;opacity:.85;font-size:.65rem">(₹/mo)</span></th>
+          <th class="th-calc" style="min-width:110px">Required Lump Sum<br><span style="font-weight:400;opacity:.85;font-size:.65rem">(₹)</span></th>
+          <th class="th-user" style="min-width:110px">Your SIP<br>Amount (₹)</th>
+          <th class="th-user" style="min-width:110px">Your Lump Sum<br>Amount (₹)</th>
+          <th class="th-calc" style="min-width:140px">Projection @ Maturity (₹)<br><span style="font-weight:400;opacity:.85;font-size:.65rem">[Target shown in lakhs]</span></th>
+          <th style="min-width:80px">Goal<br>Status</th>
+          <th class="th-calc" style="min-width:110px">Addl. SIP<br>Needed (₹/mo)</th>
+          <th class="th-calc" style="min-width:110px">Addl. LM<br>Needed (₹)</th>
         </tr>
       </thead>
       <tbody id="priorityBody"></tbody>
@@ -101,20 +100,20 @@ const LS_KEY = 'finsc_v5';
 function defState() {
   return {
     s: {...DEF_S},
-    fixedGoals: FIXED_GOALS.map(() => ({val:'', date:'Immediate', name:''})),
+    fixedGoals: FIXED_GOALS.map((g,i) => ({val:'', date: i===0 ? 'Immediate' : '', name:''})),
     childGoals: [
-      {childName:'', eduVal:'', eduDate:'Immediate', marryVal:'', marryDate:'Immediate'},
-      {childName:'', eduVal:'', eduDate:'Immediate', marryVal:'', marryDate:'Immediate'},
+      {childName:'', eduVal:'', eduDate:'', marryVal:'', marryDate:''},
+      {childName:'', eduVal:'', eduDate:'', marryVal:'', marryDate:''},
     ],
     aspirationGoals: [
-      {name:'', val:'', date:'Immediate'},
-      {name:'', val:'', date:'Immediate'},
-      {name:'', val:'', date:'Immediate'},
+      {name:'', val:'', date:''},
+      {name:'', val:'', date:''},
+      {name:'', val:'', date:''},
     ],
     customGoals: [
-      {name:'', val:'', date:'Immediate'},
-      {name:'', val:'', date:'Immediate'},
-      {name:'', val:'', date:'Immediate'},
+      {name:'', val:'', date:''},
+      {name:'', val:'', date:''},
+      {name:'', val:'', date:''},
     ],
     pris: Array.from({length:10}, () => ({gid:'', sip:'', lm:''})),
     sipSurplus:0, lmSurplus:0
@@ -131,15 +130,19 @@ function loadST() {
     const d  = defState();
     return {
       s: {...d.s,...(sv.s||{})},
-      fixedGoals: d.fixedGoals.map((g,i) => ({...g,...(sv.fixedGoals?.[i]||{})})),
+      fixedGoals: d.fixedGoals.map((g,i) => {
+        const merged = {...g,...(sv.fixedGoals?.[i]||{})};
+        if (i === 0) merged.date = 'Immediate';
+        return merged;
+      }),
       childGoals: (sv.childGoals && sv.childGoals.length)
-        ? sv.childGoals.map(c => ({childName:'',eduVal:'',eduDate:'Immediate',marryVal:'',marryDate:'Immediate',...c}))
+        ? sv.childGoals.map(c => ({childName:'',eduVal:'',eduDate:'',marryVal:'',marryDate:'',...c}))
         : d.childGoals,
       aspirationGoals: (sv.aspirationGoals && sv.aspirationGoals.length)
-        ? sv.aspirationGoals.map(a => ({name:'',val:'',date:'Immediate',...a}))
+        ? sv.aspirationGoals.map(a => ({name:'',val:'',date:'',...a}))
         : d.aspirationGoals,
       customGoals: (sv.customGoals && sv.customGoals.length)
-        ? sv.customGoals.map(c => ({name:'',val:'',date:'Immediate',...c}))
+        ? sv.customGoals.map(c => ({name:'',val:'',date:'',...c}))
         : d.customGoals,
       pris: sv.pris && sv.pris.length
         ? sv.pris.map(p => ({gid:'',sip:'',lm:'',...p}))
@@ -233,26 +236,27 @@ function buildGoalMap() {
 
   FIXED_GOALS.forEach((tmpl, i) => {
     const g = ST.fixedGoals[i];
-    const c = computeGoal(g.val, g.date||'Immediate', tmpl.isRet, s);
-    gmap[tmpl.id] = {...c, label:tmpl.label, date:g.date||'Immediate'};
+    const date = (i === 0) ? 'Immediate' : g.date; // Liquidity always Immediate
+    const c = computeGoal(g.val, date, tmpl.isRet, s);
+    gmap[tmpl.id] = {...c, label:tmpl.label, date};
   });
 
   ST.childGoals.forEach((cg, ci) => {
     const childLabel = cg.childName || `Child ${ci+1}`;
-    const cEdu = computeGoal(cg.eduVal, cg.eduDate||'Immediate', false, s);
-    gmap[`child${ci}_edu`]   = {...cEdu, label:`${childLabel} – Education`, date:cg.eduDate||'Immediate'};
-    const cMar = computeGoal(cg.marryVal, cg.marryDate||'Immediate', false, s);
-    gmap[`child${ci}_marry`] = {...cMar, label:`${childLabel} – Marriage`,  date:cg.marryDate||'Immediate'};
+    const cEdu = computeGoal(cg.eduVal, cg.eduDate, false, s);
+    gmap[`child${ci}_edu`]   = {...cEdu, label:`${childLabel} – Education`, date:cg.eduDate};
+    const cMar = computeGoal(cg.marryVal, cg.marryDate, false, s);
+    gmap[`child${ci}_marry`] = {...cMar, label:`${childLabel} – Marriage`,  date:cg.marryDate};
   });
 
   ST.aspirationGoals.forEach((ag, ai) => {
-    const c = computeGoal(ag.val, ag.date||'Immediate', false, s);
-    gmap[`asp${ai}`] = {...c, label:ag.name||`Aspiration Goal ${ai+1}`, date:ag.date||'Immediate'};
+    const c = computeGoal(ag.val, ag.date, false, s);
+    gmap[`asp${ai}`] = {...c, label:ag.name||`Aspiration Goal ${ai+1}`, date:ag.date};
   });
 
   ST.customGoals.forEach((cg, ci) => {
-    const c = computeGoal(cg.val, cg.date||'Immediate', false, s);
-    gmap[`cust${ci}`] = {...c, label:cg.name||`Custom Goal ${ci+1}`, date:cg.date||'Immediate'};
+    const c = computeGoal(cg.val, cg.date, false, s);
+    gmap[`cust${ci}`] = {...c, label:cg.name||`Custom Goal ${ci+1}`, date:cg.date};
   });
 
   return gmap;
@@ -355,14 +359,14 @@ function buildPriority() {
 
     let badge = `<span class="bdg bdg-na">—</span>`;
     if (pd.status==='on')  badge = `<span class="bdg bdg-on">✅ On Track</span>`;
-    if (pd.status==='off') badge = `<span class="bdg bdg-off">⚡ More</span>`;
+    if (pd.status==='off') badge = `<span class="bdg bdg-off">⚡ Invest More</span>`;
 
     let projHtml = '<span class="cz">—</span>';
     if (pd.proj && pd.target) {
       const pct = (pd.proj/pd.target*100).toFixed(0);
       const col = pd.status==='on' ? 'var(--green)' : 'var(--amber)';
       projHtml = `<strong style="color:${col}">${inrSh(pd.proj)}</strong>
-        <small style="display:block;color:var(--ink-lt);font-size:.68rem">Tgt: ${inrSh(pd.target)} (${pct}%)</small>`;
+        <small style="display:block;color:var(--ink-lt);font-size:.68rem">Target: ${inrSh(pd.target)} (${pct}%)</small>`;
     }
 
     const hasUserInput = (parseFloat(pr.sip)||0) > 0 || (parseFloat(pr.lm)||0) > 0;
@@ -380,17 +384,17 @@ function buildPriority() {
     tr.innerHTML = `
       <td style="text-align:center"><strong style="color:var(--gold);font-size:.86rem">P${i+1}</strong></td>
       <td><select class="ti" data-pidx="${i}" data-pfield="gid" style="max-width:188px">${opts}</select></td>
-      <td data-hide-mobile style="font-size:.76rem;color:var(--ink-lt)">${tDate}</td>
+      <td style="font-size:.76rem;color:var(--ink-lt)">${tDate}</td>
       <td style="font-size:.76rem;color:var(--teal);font-weight:600">${rSIPd}</td>
-      <td data-hide-mobile style="font-size:.76rem;color:var(--teal);font-weight:600">${rLMd}</td>
+      <td style="font-size:.76rem;color:var(--teal);font-weight:600">${rLMd}</td>
       <td><input class="ti${sipNoSurplusCls}" type="number" data-pidx="${i}" data-pfield="sip"
            value="${pr.sip||''}" min="0" step="500" placeholder="0" style="max-width:105px" autocomplete="off" inputmode="decimal"></td>
       <td><input class="ti${lmNoSurplusCls}" type="number" data-pidx="${i}" data-pfield="lm"
            value="${pr.lm||''}" min="0" step="1000" placeholder="0" style="max-width:105px" autocomplete="off" inputmode="decimal"></td>
-      <td data-hide-mobile>${projHtml}</td>
+      <td>${projHtml}</td>
       <td>${badge}</td>
       <td>${addSIP}</td>
-      <td data-hide-mobile>${addLM}</td>
+      <td>${addLM}</td>
     `;
     frag.appendChild(tr);
   });
@@ -400,17 +404,6 @@ function buildPriority() {
   document.getElementById('allocSIP').textContent = inr(allocSIP);
   document.getElementById('allocLM').textContent  = inr(allocLM);
   updateSurplusWarning();
-  applyMobileColHide();
-}
-
-function applyMobileColHide() {
-  const isMobile = window.innerWidth <= 767;
-  document.querySelectorAll('.pri-tbl thead th[data-hide-mobile]').forEach(el => {
-    el.style.display = isMobile ? 'none' : '';
-  });
-  document.querySelectorAll('.pri-tbl tbody td[data-hide-mobile]').forEach(el => {
-    el.style.display = isMobile ? 'none' : '';
-  });
 }
 
 /* ══ TARGETED UPDATE ══ */
@@ -434,13 +427,13 @@ function updatePriorityCalcCells() {
       const pct = (pd.proj/pd.target*100).toFixed(0);
       const col = pd.status==='on' ? 'var(--green)' : 'var(--amber)';
       projHtml = `<strong style="color:${col}">${inrSh(pd.proj)}</strong>
-        <small style="display:block;color:var(--ink-lt);font-size:.68rem">Tgt: ${inrSh(pd.target)} (${pct}%)</small>`;
+        <small style="display:block;color:var(--ink-lt);font-size:.68rem">Target: ${inrSh(pd.target)} (${pct}%)</small>`;
     }
     tds[7].innerHTML = projHtml;
 
     let badge = `<span class="bdg bdg-na">—</span>`;
     if (pd.status==='on')  badge = `<span class="bdg bdg-on">✅ On Track</span>`;
-    if (pd.status==='off') badge = `<span class="bdg bdg-off">⚡ More</span>`;
+    if (pd.status==='off') badge = `<span class="bdg bdg-off">⚡ Invest More</span>`;
     tds[8].innerHTML = badge;
 
     const hasUserInput = (parseFloat(pr.sip)||0) > 0 || (parseFloat(pr.lm)||0) > 0;
@@ -504,12 +497,6 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   document.getElementById('lmSurplus').value  = 0;
   buildPriority();
   toast('All data reset to defaults.');
-});
-
-let _resizeTimer;
-window.addEventListener('resize', () => {
-  clearTimeout(_resizeTimer);
-  _resizeTimer = setTimeout(applyMobileColHide, 120);
 });
 
 /* ══ TOAST ══ */
