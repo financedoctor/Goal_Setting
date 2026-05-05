@@ -43,13 +43,12 @@ body{font-family:var(--fb);background:var(--paper);color:var(--ink);min-height:1
 .sec-hdr h1 em{color:var(--gold);font-style:italic}
 .sec-hdr p{color:var(--ink-lt);font-size:.88rem;margin-top:.3rem}
 
-/* ══ TABLE WRAPPERS — always scrollable, all columns always visible ══ */
+/* ══ TABLE WRAPPERS ══ */
 .tscroll-goals{
   display:flex;flex-direction:column;overflow-x:auto;overflow-y:auto;
   max-height:calc(100vh - var(--hdr-h) - 80px);
   border-radius:var(--rm);border:1.5px solid var(--cream);box-shadow:var(--s1);background:#fff;margin-bottom:1rem;
   -webkit-overflow-scrolling:touch;
-  /* Force hardware-accelerated scrolling so all columns remain reachable */
   will-change:transform;
 }
 .tscroll-goals table{width:100%;border-collapse:collapse;font-size:.82rem;flex:1}
@@ -61,13 +60,10 @@ body{font-family:var(--fb);background:var(--paper);color:var(--ink);min-height:1
   -webkit-overflow-scrolling:touch;
   will-change:transform;
 }
-.pri-add-wrap{display:flex;justify-content:flex-start;padding:.45rem 0;margin-bottom:.6rem}
 
 table{width:100%;border-collapse:collapse;font-size:.82rem}
 
-/* Section 1 min-width: 9 columns all visible — NEVER reduced by breakpoints */
 .goals-tbl{min-width:900px !important}
-/* Section 2 min-width: 11 columns all visible — NEVER reduced by breakpoints */
 .pri-tbl{min-width:1050px !important}
 
 thead th{
@@ -112,7 +108,6 @@ tbody td{padding:.52rem .72rem;vertical-align:middle}
 .ti:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,149,42,.18)}
 select.ti{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:22px;appearance:none;-webkit-appearance:none}
 
-/* INPUT highlight when no surplus declared */
 .ti.no-surplus{border-color:#e07030!important;background:#fff7f0!important}
 .ti.no-surplus:focus{box-shadow:0 0 0 2px rgba(224,112,48,.2)!important}
 
@@ -129,15 +124,33 @@ select.ti{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='
 .bdg-off{background:var(--amber-lt);color:var(--amber)}
 .bdg-na{background:var(--cream);color:var(--ink-lt)}
 
-/* SURPLUS BAR */
-.surp{display:flex;gap:1rem;flex-wrap:wrap;padding:.6rem .9rem;background:var(--green-lt);
-  border-radius:var(--rm);border:1.5px solid #a8dfc4;align-items:flex-end;flex-shrink:0}
-.surp-it{display:flex;flex-direction:column;gap:.22rem}
-.surp-it label{font-size:.73rem;font-weight:600;color:var(--green);white-space:nowrap}
-.surp-it .si{border:1.5px solid var(--ybd);background:var(--yin);border-radius:var(--r);
+/* ══ SURPLUS PANEL — side by side, never stacks unless very tight ══ */
+.surp{
+  display:flex;flex-direction:row;flex-wrap:nowrap;
+  gap:.75rem;
+  padding:.65rem .9rem;background:var(--green-lt);
+  border-radius:var(--rm);border:1.5px solid #a8dfc4;
+  align-items:flex-end;
+  margin-bottom:.5rem;
+  width:100%;
+}
+.surp-it{display:flex;flex-direction:column;gap:.22rem;flex:1;min-width:0}
+.surp-it label{
+  font-size:.72rem;font-weight:600;color:var(--green);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.surp-it .si{
+  border:1.5px solid var(--ybd);background:var(--yin);border-radius:var(--r);
   padding:.32rem .48rem;font-family:var(--fb);font-size:.8rem;color:var(--ink);
-  width:200px;transition:border-color var(--tr);-webkit-appearance:none;appearance:none}
+  width:100%;transition:border-color var(--tr);-webkit-appearance:none;appearance:none;
+}
 .surp-it .si:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,149,42,.18)}
+
+/* Amount in words below surplus inputs */
+.surp-words{
+  font-size:.68rem;color:var(--teal);font-weight:600;margin-top:.15rem;
+  min-height:.9rem;line-height:1.3;
+}
 
 /* SURPLUS WARNING */
 .surp-warning{
@@ -148,7 +161,7 @@ select.ti{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='
 .surp-warning.visible{display:flex;align-items:flex-start;gap:.55rem}
 .surp-warning .warn-icon{font-size:1rem;flex-shrink:0;margin-top:.05rem}
 
-/* SCROLL HINT — always shown since tables always scroll on small screens */
+/* SCROLL HINT */
 .scroll-hint{display:none;font-size:.7rem;color:var(--ink-lt);text-align:right;margin-bottom:.25rem;padding-right:.25rem}
 
 /* FOOTNOTE */
@@ -171,7 +184,6 @@ select.ti{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='
   .hdr-in{gap:.5rem;padding:0 .9rem}
   .tbtn{padding:.34rem .65rem;font-size:.78rem}
   .tscroll-goals{max-height:calc(100vh - var(--hdr-h) - 10px)}
-  .surp-it .si{width:170px}
 }
 
 @media(max-width:767px){
@@ -184,21 +196,20 @@ select.ti{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='
   .main{padding:.85rem .65rem calc(2.5rem + var(--safe-bottom))}
   .sec-hdr{flex-direction:column;gap:.75rem;margin-bottom:1rem}
   .sec-hdr h1{font-size:1.25rem}
-  .surp{flex-direction:column;gap:.6rem;padding:.65rem .8rem}
-  .surp-it .si{width:100%;max-width:300px}
-  /* Always show scroll hint on mobile — tables always wider than viewport */
+  /* Surplus: stay side-by-side on mobile, shrink labels */
+  .surp{flex-direction:row;flex-wrap:nowrap;gap:.5rem;padding:.5rem .65rem}
+  .surp-it label{font-size:.65rem}
+  .surp-it .si{font-size:.75rem;padding:.28rem .4rem}
+  /* Always show scroll hint on mobile */
   .scroll-hint{display:block}
-  /* Tables keep their min-width — wrapper scrolls horizontally */
   .tscroll-goals{border-radius:var(--r);max-height:calc(100vh - var(--hdr-h) - 120px);overflow-x:auto}
   .tscroll-pri{overflow-x:auto}
-  /* Slightly reduce font/padding inside cells but never collapse columns */
   table{font-size:.74rem}
   thead th{padding:.48rem .42rem;font-size:.65rem}
   tbody td{padding:.42rem .44rem}
   .ti{font-size:.74rem;padding:.3rem .4rem}
   select.ti{font-size:.74rem}
   .tot-row td{font-size:.72rem;padding:.55rem .44rem}
-  /* Keep input widths from overflowing their cells */
   .ti[style*="max-width"]{max-width:100% !important;min-width:70px}
 }
 
@@ -213,8 +224,10 @@ select.ti{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='
   .ti{font-size:.7rem;padding:.28rem .34rem}
   .cv{font-size:.78rem}
   .bdg{font-size:.64rem;padding:.14rem .4rem}
-  /* Inputs in table cells: shrink gracefully, never cause overflow */
-  .goals-tbl .ti, .pri-tbl .ti, .goals-tbl select.ti, .pri-tbl select.ti{min-width:60px;width:100%}
+  .surp{gap:.4rem;padding:.45rem .5rem}
+  .surp-it label{font-size:.62rem}
+  .goals-tbl .ti,.pri-tbl .ti,
+  .goals-tbl select.ti,.pri-tbl select.ti{min-width:60px;width:100%}
 }
 
 @media(max-width:380px){
@@ -225,6 +238,8 @@ select.ti{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='
   thead th{font-size:.58rem;padding:.38rem .3rem}
   tbody td{padding:.34rem .32rem}
   .ti{font-size:.68rem;padding:.26rem .3rem}
+  .surp{gap:.35rem;padding:.4rem .45rem}
+  .surp-it label{font-size:.59rem}
 }
 
 @media(max-width:767px) and (orientation:landscape){
