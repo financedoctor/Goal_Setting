@@ -312,7 +312,7 @@ function buildGoals() {
     return h ? `<small class="cv-hint">${esc(h)}</small>` : '';
   }
 
-  frag.appendChild(makeGroupHeader('Fixed Goals', 9));
+  frag.appendChild(makeGroupHeader('', 9));
 
   FIXED_GOALS.forEach((tmpl, i) => {
     rowNum++;
@@ -346,7 +346,7 @@ function buildGoals() {
   });
 
   /* ── Child Goals ── */
-  frag.appendChild(makeGroupHeader('Child Goals', 9));
+  frag.appendChild(makeGroupHeader('', 9));
 
   ST.childGoals.forEach((cg, ci) => {
     const childLabel = cg.childName || `Child ${ci+1}`;
@@ -397,7 +397,7 @@ function buildGoals() {
   frag.appendChild(makeAddRow('child', '+ Add Child'));
 
   /* ── Aspiration Goals ── */
-  frag.appendChild(makeGroupHeader('Aspiration Goals', 9));
+  frag.appendChild(makeGroupHeader('', 9));
 
   ST.aspirationGoals.forEach((ag, ai) => {
     rowNum++;
