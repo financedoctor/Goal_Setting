@@ -1,561 +1,1163 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
-<title>FinScorecard — Section 1: Goals</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover" />
+    <title>Goal Setting - Combined</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --ink: #1a1a2e;
+            --ink-lt: #5a5a7a;
+            --paper: #f5f3ee;
+            --cream: #e8e4db;
+            --gold: #c9952a;
+            --gold-lt: #fdf3dc;
+            --teal: #0d7377;
+            --teal-lt: #d0eced;
+            --rose: #c0392b;
+            --rose-lt: #fde8e6;
+            --green: #1e7a3d;
+            --green-lt: #d5f0e1;
+            --amber: #b8760a;
+            --amber-lt: #fef0dc;
+            --yin: #fffcf0;
+            --ybd: #e8c84a;
+            --r: 6px;
+            --rm: 10px;
+            --s1: 0 1px 4px rgba(0, 0, 0, .07);
+            --s2: 0 4px 14px rgba(0, 0, 0, .09);
+            --s3: 0 8px 28px rgba(0, 0, 0, .12);
+            --fd: 'DM Serif Display', Georgia, serif;
+            --fb: 'DM Sans', system-ui, sans-serif;
+            --tr: .16s ease;
+            --hdr-h: 60px;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%
+        }
+
+        body {
+            font-family: var(--fb);
+            background: var(--paper);
+            color: var(--ink);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden
+        }
+
+        .hdr {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: var(--ink);
+            border-bottom: 3px solid var(--gold);
+            box-shadow: var(--s2)
+        }
+
+        .hdr-in {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            min-height: var(--hdr-h);
+            flex-wrap: nowrap
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            color: #fff;
+            font-family: var(--fd);
+            font-size: 1.1rem;
+            white-space: nowrap;
+            flex-shrink: 0
+        }
+
+        .logo-ic {
+            color: var(--gold);
+            font-size: 1.4rem
+        }
+
+        .hdr-top {
+            display: contents
+        }
+
+        .tab-nav {
+            display: flex;
+            gap: .22rem;
+            flex: 1;
+            min-width: 0
+        }
+
+        .tbtn {
+            background: transparent;
+            border: 1.5px solid rgba(255, 255, 255, .2);
+            color: rgba(255, 255, 255, .72);
+            padding: .38rem .9rem;
+            border-radius: var(--r);
+            cursor: pointer;
+            font-family: var(--fb);
+            font-size: .82rem;
+            font-weight: 500;
+            transition: var(--tr);
+            white-space: nowrap;
+            line-height: 1.3;
+            text-decoration: none;
+            display: inline-block
+        }
+
+        .tbtn:hover {
+            background: rgba(255, 255, 255, .1);
+            color: #fff
+        }
+
+        .rst-btn {
+            background: transparent;
+            border: 1.5px solid var(--rose);
+            color: var(--rose);
+            padding: .36rem .85rem;
+            border-radius: var(--r);
+            cursor: pointer;
+            font-size: .78rem;
+            font-weight: 600;
+            transition: var(--tr);
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-left: auto
+        }
+
+        .rst-btn:hover {
+            background: var(--rose);
+            color: #fff
+        }
+
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 1.25rem calc(3rem + var(--safe-bottom))
+        }
+
+        .pdf-bar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: .75rem;
+            padding: .6rem 1rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d2d4e 100%);
+            border-radius: var(--rm);
+            border: 1.5px solid var(--gold);
+            box-shadow: var(--s2)
+        }
+
+        .pdf-tip {
+            font-size: .72rem;
+            color: rgba(255, 255, 255, .6);
+            font-style: italic
+        }
+
+        .pdf-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            background: linear-gradient(135deg, var(--gold) 0%, #e8a820 100%);
+            color: var(--ink);
+            border: none;
+            border-radius: var(--r);
+            padding: .5rem 1.1rem;
+            font-family: var(--fb);
+            font-size: .82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--tr);
+            box-shadow: 0 2px 8px rgba(201, 149, 42, .35);
+            letter-spacing: .02em;
+            white-space: nowrap
+        }
+
+        .pdf-btn:hover {
+            background: linear-gradient(135deg, #e8a820 0%, var(--gold) 100%);
+            box-shadow: 0 4px 14px rgba(201, 149, 42, .5);
+            transform: translateY(-1px)
+        }
+
+        .pdf-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(201, 149, 42, .3)
+        }
+
+        .pdf-btn svg {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0
+        }
+
+        .section-card {
+            margin-bottom: 1.2rem
+        }
+
+        .section-title {
+            font-family: var(--fd);
+            font-size: 1.2rem;
+            color: var(--ink);
+            margin-bottom: .45rem
+        }
+
+        .section-sub {
+            font-size: .82rem;
+            color: var(--ink-lt);
+            margin-bottom: .6rem
+        }
+
+        .tscroll-goals,
+        .tscroll-pri {
+            overflow-x: auto;
+            border-radius: var(--rm);
+            border: 1.5px solid var(--cream);
+            box-shadow: var(--s1);
+            background: #fff;
+            margin-bottom: .6rem;
+            -webkit-overflow-scrolling: touch
+        }
+
+        .tscroll-goals {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: calc(100vh - var(--hdr-h) - 120px)
+        }
+
+        .tscroll-goals table {
+            flex: 1
+        }
+
+        .tscroll-goals tfoot {
+            position: sticky;
+            bottom: 0;
+            z-index: 9;
+            background: var(--ink) !important
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .82rem
+        }
+
+        .goals-tbl {
+            min-width: 900px
+        }
+
+        .pri-tbl {
+            min-width: 1050px
+        }
+
+        thead th {
+            background: var(--ink);
+            color: #fff;
+            padding: .65rem .75rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: .73rem;
+            letter-spacing: .04em;
+            white-space: nowrap;
+            border-right: 1px solid rgba(255, 255, 255, .1);
+            position: sticky;
+            top: 0;
+            z-index: 10
+        }
+
+        thead th:last-child {
+            border-right: none
+        }
+
+        thead th.th-calc {
+            background: #14142a;
+            color: #fdf3dc
+        }
+
+        thead th.th-user {
+            background: #0a3d2e;
+            color: #aef5c9
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--cream);
+            transition: background var(--tr)
+        }
+
+        tbody tr:hover {
+            background: #fafaf7
+        }
+
+        tbody tr:last-child {
+            border-bottom: none
+        }
+
+        tbody td {
+            padding: .52rem .72rem;
+            vertical-align: middle
+        }
+
+        .tot-row {
+            background: var(--ink) !important
+        }
+
+        .tot-row td {
+            color: #fff !important;
+            font-weight: 700;
+            font-size: .78rem;
+            letter-spacing: .03em;
+            padding: .65rem .75rem
+        }
+
+        .tot-val {
+            color: var(--gold) !important;
+            font-size: .88rem
+        }
+
+        .grp-row td {
+            background: #f0ede6;
+            font-size: .72rem;
+            font-weight: 700;
+            color: var(--ink-lt);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            padding: .38rem .75rem;
+            border-bottom: 1px solid var(--cream)
+        }
+
+        .add-row-cell {
+            text-align: center;
+            padding: .45rem .75rem !important;
+            background: #fafaf7
+        }
+
+        .add-row-btn {
+            background: transparent;
+            border: 1.5px dashed var(--teal);
+            color: var(--teal);
+            padding: .28rem .85rem;
+            border-radius: var(--r);
+            cursor: pointer;
+            font-family: var(--fb);
+            font-size: .75rem;
+            font-weight: 600;
+            transition: var(--tr);
+            white-space: nowrap
+        }
+
+        .add-row-btn:hover {
+            background: var(--teal-lt);
+            border-style: solid
+        }
+
+        .del-btn {
+            background: transparent;
+            border: none;
+            color: var(--rose);
+            cursor: pointer;
+            font-size: .85rem;
+            padding: .18rem .35rem;
+            border-radius: 3px;
+            transition: var(--tr);
+            line-height: 1;
+            min-width: 28px;
+            min-height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .del-btn:hover {
+            background: var(--rose-lt)
+        }
+
+        .ti {
+            border: 1.5px solid var(--ybd);
+            background: var(--yin);
+            border-radius: var(--r);
+            padding: .34rem .5rem;
+            font-family: var(--fb);
+            font-size: .8rem;
+            color: var(--ink);
+            width: 100%;
+            transition: border-color var(--tr);
+            display: block;
+            -webkit-appearance: none;
+            appearance: none
+        }
+
+        .ti:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 2px rgba(201, 149, 42, .18)
+        }
+
+        select.ti {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            padding-right: 22px
+        }
+
+        .ti.no-surplus {
+            border-color: #e07030 !important;
+            background: #fff7f0 !important
+        }
+
+        .cv {
+            font-weight: 700;
+            color: var(--teal);
+            font-size: .84rem
+        }
+
+        .cv small {
+            color: var(--ink-lt);
+            font-weight: 400;
+            font-size: .7rem;
+            display: block
+        }
+
+        .cz {
+            color: var(--ink-lt);
+            font-size: .78rem
+        }
+
+        .cv-hint {
+            font-size: .71rem;
+            color: var(--teal);
+            font-weight: 600;
+            display: block;
+            margin-top: .18rem;
+            line-height: 1.3
+        }
+
+        .warn-cell {
+            color: var(--amber);
+            font-size: .73rem;
+            font-style: italic
+        }
+
+        .bdg {
+            display: inline-flex;
+            align-items: center;
+            padding: .18rem .5rem;
+            border-radius: 999px;
+            font-size: .7rem;
+            font-weight: 700;
+            white-space: nowrap
+        }
+
+        .bdg-on {
+            background: var(--green-lt);
+            color: var(--green)
+        }
+
+        .bdg-off {
+            background: var(--amber-lt);
+            color: var(--amber)
+        }
+
+        .bdg-na {
+            background: var(--cream);
+            color: var(--ink-lt)
+        }
+
+        .surp {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            gap: .75rem;
+            padding: .65rem .9rem;
+            background: var(--green-lt);
+            border-radius: var(--rm);
+            border: 1.5px solid #a8dfc4;
+            align-items: flex-end;
+            margin-bottom: .5rem;
+            width: 100%
+        }
+
+        .surp-it {
+            display: flex;
+            flex-direction: column;
+            gap: .22rem;
+            flex: 1;
+            min-width: 0
+        }
+
+        .surp-it label {
+            font-size: .72rem;
+            font-weight: 600;
+            color: var(--green);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .surp-it .si {
+            border: 1.5px solid var(--ybd);
+            background: var(--yin);
+            border-radius: var(--r);
+            padding: .32rem .48rem;
+            font-family: var(--fb);
+            font-size: .8rem;
+            color: var(--ink);
+            width: 100%;
+            transition: border-color var(--tr)
+        }
+
+        .surp-it .si:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 2px rgba(201, 149, 42, .18)
+        }
+
+        .surp-words {
+            font-size: .68rem;
+            color: var(--teal);
+            font-weight: 600;
+            margin-top: .15rem;
+            min-height: .9rem;
+            line-height: 1.3
+        }
+
+        .surp-warning {
+            display: none;
+            padding: .65rem 1rem;
+            border-radius: var(--r);
+            font-size: .78rem;
+            font-weight: 500;
+            margin-top: .5rem;
+            margin-bottom: .5rem;
+            line-height: 1.6;
+            border: 1.5px solid
+        }
+
+        .surp-warning.visible {
+            display: flex;
+            align-items: flex-start;
+            gap: .6rem
+        }
+
+        .surp-warning .warn-icon {
+            font-size: 1.05rem;
+            flex-shrink: 0;
+            margin-top: .1rem
+        }
+
+        .surp-warning .warn-lines {
+            display: flex;
+            flex-direction: column;
+            gap: .18rem
+        }
+
+        .scroll-hint {
+            display: none;
+            font-size: .7rem;
+            color: var(--ink-lt);
+            text-align: right;
+            margin-bottom: .25rem;
+            padding-right: .25rem
+        }
+
+        .mobile-cards {
+            display: none;
+            margin-top: .5rem
+        }
+
+        .mc {
+            background: #fff;
+            border: 1.5px solid var(--cream);
+            border-radius: var(--rm);
+            margin-bottom: .65rem;
+            overflow: hidden;
+            box-shadow: var(--s1)
+        }
+
+        .mc-hdr {
+            background: var(--ink);
+            color: #fff;
+            padding: .45rem .75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: .5rem
+        }
+
+        .mc-p {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: .82rem
+        }
+
+        .mc-goal {
+            font-size: .78rem;
+            font-weight: 500;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .mc-body {
+            padding: .55rem .75rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .3rem .5rem
+        }
+
+        .mc-label {
+            font-size: .65rem;
+            color: var(--ink-lt);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            align-self: center
+        }
+
+        .mc-val {
+            font-size: .75rem;
+            color: var(--ink);
+            font-weight: 500;
+            align-self: center
+        }
+
+        .mc-val.teal {
+            color: var(--teal);
+            font-weight: 700
+        }
+
+        .mc-val.rose {
+            color: var(--rose);
+            font-weight: 700
+        }
+
+        .mc-sel {
+            width: 100%;
+            grid-column: 1/-1;
+            margin-bottom: .2rem
+        }
+
+        .mc-inp-row {
+            grid-column: 1/-1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .4rem;
+            margin: .2rem 0
+        }
+
+        .mc-inp-label {
+            font-size: .65rem;
+            color: var(--green);
+            font-weight: 700;
+            margin-bottom: .15rem
+        }
+
+        .toast {
+            position: fixed;
+            bottom: calc(1.5rem + var(--safe-bottom));
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--ink);
+            color: #fff;
+            padding: .62rem 1.4rem;
+            border-radius: 999px;
+            font-size: .8rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: all .3s cubic-bezier(.34, 1.56, .64, 1);
+            z-index: 9999;
+            white-space: nowrap;
+            box-shadow: var(--s3);
+            pointer-events: none;
+            max-width: 90vw;
+            text-align: center
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0)
+        }
+
+        @media(max-width:1023px) {
+            :root {
+                --hdr-h: 56px
+            }
+
+            .hdr-in {
+                gap: .5rem;
+                padding: 0 .9rem
+            }
+
+            .tbtn {
+                padding: .34rem .65rem;
+                font-size: .78rem
+            }
+
+            .tscroll-goals {
+                max-height: calc(100vh - var(--hdr-h) - 10px)
+            }
+        }
+
+        @media(max-width:767px) {
+            .hdr-in {
+                flex-direction: column;
+                padding: .5rem .85rem .52rem;
+                gap: .38rem;
+                align-items: stretch;
+                min-height: auto
+            }
+
+            .hdr-top {
+                display: flex;
+                width: 100%;
+                align-items: center;
+                justify-content: space-between;
+                gap: .5rem
+            }
+
+            .rst-btn {
+                margin-left: 0;
+                font-size: .72rem;
+                padding: .32rem .7rem
+            }
+
+            .logo {
+                font-size: 1rem
+            }
+
+            .tab-nav {
+                width: 100%;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: .18rem
+            }
+
+            .tbtn {
+                text-align: center;
+                font-size: .76rem;
+                padding: .4rem .3rem;
+                width: 100%;
+                white-space: normal;
+                line-height: 1.2
+            }
+
+            .main {
+                padding: .85rem .65rem calc(2.5rem + var(--safe-bottom))
+            }
+
+            .scroll-hint {
+                display: block
+            }
+
+            table {
+                font-size: .74rem
+            }
+
+            thead th {
+                padding: .48rem .42rem;
+                font-size: .65rem
+            }
+
+            tbody td {
+                padding: .42rem .44rem
+            }
+
+            .ti {
+                font-size: .74rem;
+                padding: .3rem .4rem
+            }
+
+            .tot-row td {
+                font-size: .72rem;
+                padding: .55rem .44rem
+            }
+
+            .pdf-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: .4rem
+            }
+
+            .pdf-btn {
+                width: 100%;
+                justify-content: center
+            }
+
+            .surp {
+                gap: .5rem;
+                padding: .5rem .65rem
+            }
+
+            .surp-it label {
+                font-size: .65rem
+            }
+
+            .surp-it .si {
+                font-size: .75rem;
+                padding: .28rem .4rem
+            }
+
+            .tscroll-pri {
+                display: none
+            }
+
+            .mobile-cards {
+                display: block
+            }
+        }
+
+        @media(max-width:480px) {
+            .tbtn {
+                font-size: .7rem;
+                padding: .38rem .2rem
+            }
+
+            .logo {
+                font-size: .92rem
+            }
+
+            .logo-ic {
+                font-size: 1.2rem
+            }
+        }
+
+        @media print {
+            @page {
+                size: A3 landscape;
+                margin: 8mm 6mm
+            }
+
+            .hdr,
+            .pdf-bar,
+            .rst-btn,
+            .scroll-hint,
+            .add-row-cell,
+            .del-btn,
+            .mobile-cards {
+                display: none !important
+            }
+
+            body {
+                background: #fff !important;
+                font-size: 8pt;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact
+            }
+
+            .main {
+                padding: 0;
+                max-width: none
+            }
+
+            .section-card {
+                break-inside: avoid-page;
+                margin-bottom: 5mm
+            }
+
+            .tscroll-goals,
+            .tscroll-pri {
+                overflow: visible !important;
+                max-height: none !important;
+                border: 1pt solid #e8e4db !important;
+                border-radius: 4pt !important;
+                box-shadow: none !important
+            }
+
+            table {
+                font-size: 7.5pt;
+                width: 100%;
+                border-collapse: collapse
+            }
+
+            .goals-tbl,
+            .pri-tbl {
+                min-width: 0 !important;
+                width: 100%
+            }
+
+            thead th {
+                background: #1a1a2e !important;
+                color: #fff !important;
+                padding: 2.5mm 2mm;
+                font-size: 6.5pt;
+                letter-spacing: .03em;
+                white-space: normal;
+                word-break: break-word;
+                border-right: .5pt solid rgba(255, 255, 255, .15) !important
+            }
+
+            thead th.th-calc {
+                background: #14142a !important;
+                color: #fdf3dc !important
+            }
+
+            thead th.th-user {
+                background: #0a3d2e !important;
+                color: #aef5c9 !important
+            }
+
+            tbody td {
+                padding: 2mm 2mm;
+                font-size: 7.5pt
+            }
+
+            .tot-row td {
+                background: #1a1a2e !important;
+                color: #fff !important;
+                font-weight: 700;
+                font-size: 7.5pt;
+                padding: 2.5mm 2mm
+            }
+
+            .tot-val {
+                color: #c9952a !important;
+                font-size: 8pt !important
+            }
+
+            .ti,
+            .si {
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                font-size: 7.5pt !important;
+                width: auto !important;
+                max-width: none !important;
+                box-shadow: none !important;
+                -webkit-appearance: none !important;
+                appearance: none !important;
+                background-image: none !important
+            }
+
+            .grp-row td {
+                background: #f0ede6 !important;
+                font-size: 7pt;
+                font-weight: 700;
+                color: #5a5a7a !important;
+                letter-spacing: .05em;
+                text-transform: uppercase;
+                padding: 2mm 2mm
+            }
+
+            .surp {
+                display: flex !important;
+                gap: 8mm;
+                padding: 3mm 4mm;
+                margin-bottom: 4mm;
+                background: #d5f0e1 !important;
+                border: 1pt solid #a8dfc4 !important;
+                border-radius: 4pt
+            }
+
+            .surp-it .si {
+                border: 1pt solid #e8c84a !important;
+                background: #fffcf0 !important;
+                border-radius: 3pt;
+                padding: 1.5mm 2mm !important
+            }
+
+            .surp-warning {
+                display: none !important
+            }
+
+            .imm-unlock {
+                display: none !important
+            }
+
+            thead {
+                display: table-header-group
+            }
+
+            tfoot {
+                display: table-footer-group
+            }
+        }
+
+        @media print {
+            .tscroll-pri {
+                display: block !important
+            }
+
+            .mobile-cards {
+                display: none !important
+            }
+        }
+    </style>
 </head>
+
 <body>
-
-<header class="hdr">
-  <div class="hdr-in">
-    <div class="hdr-top">
-      <div class="logo"><span class="logo-ic">◈</span><span>FinScorecard</span></div>
-      <button class="rst-btn" id="resetBtn">↺ Reset</button>
-    </div>
-    <nav class="tab-nav">
-      <a class="tbtn active" href="index.html">🎯 Section 1 — Goals</a>
-      <a class="tbtn" href="section2.html">🏆 Section 2 — Priority</a>
-    </nav>
-  </div>
-</header>
-
-<main class="main">
-  <p class="scroll-hint">← Scroll table horizontally →</p>
-
-  <div class="tscroll-goals">
-    <table class="goals-tbl">
-      <thead>
-        <tr>
-          <th style="width:28px">#</th>
-          <th>Goal</th>
-          <th style="min-width:110px">Child / Custom Name<br><span style="font-weight:400;opacity:.85;font-style:normal;font-size:.65rem">(updates dropdown)</span></th>
-          <th class="th-user" style="min-width:130px">
-            Current Value<br>
-            <span style="font-weight:400;opacity:.85;font-style:normal;font-size:.65rem">(₹ or units*)</span>
-          </th>
-          <th class="th-user" style="min-width:135px">
-            Target Month-Year<br>
-            <span style="font-weight:400;opacity:.85;font-style:normal;font-size:.65rem">Jan-2035 or Immediate</span>
-          </th>
-          <th class="th-calc">Target Amount (₹)<br><span style="font-weight:400;opacity:.85;font-size:.65rem">@ Inflation</span></th>
-          <th class="th-calc">Required SIP<br><span style="font-weight:400;opacity:.85;font-size:.65rem">(₹/month)</span></th>
-          <th class="th-calc">Required Lump Sum<br><span style="font-weight:400;opacity:.85;font-size:.65rem">(₹)</span></th>
-          <th style="width:36px"></th>
-        </tr>
-      </thead>
-      <tbody id="goalsBody"></tbody>
-      <tfoot>
-        <tr class="tot-row">
-          <td colspan="5">TOTAL REQUIRED SIP &amp; LUMP SUM</td>
-          <td></td>
-          <td id="totalSIP" class="tot-val">₹0</td>
-          <td id="totalLM"  class="tot-val">₹0</td>
-          <td></td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-</main>
-
-<div class="toast" id="toast"></div>
-
-<script>
-/* ══ CONSTANTS & DEFAULTS ══ */
-const DEF_S = {inflation:6, r1:5, r2:8, r3:9, r4:11, r5:10, retMult:100000, retRate:6};
-
-const FIXED_GOALS = [
-  {id:'liquidity',  label:'Liquidity / Emergency Fund', isRet:false, group:'fixed'},
-  {id:'primary',    label:'Primary Residence',           isRet:false, group:'fixed'},
-  {id:'secondary',  label:'Secondary Residence / Plot',  isRet:false, group:'fixed'},
-  {id:'retirement', label:'Retirement Corpus',           isRet:true,  group:'fixed'},
-];
-
-const LS_KEY = 'finsc_v5';
-
-function defState() {
-  return {
-    s: {...DEF_S},
-    fixedGoals: FIXED_GOALS.map((g,i) => ({val:'', date: i===0 ? 'Immediate' : '', name:''})),
-    childGoals: [
-      {childName:'', eduVal:'', eduDate:'', marryVal:'', marryDate:''},
-      {childName:'', eduVal:'', eduDate:'', marryVal:'', marryDate:''},
-    ],
-    aspirationGoals: [
-      {name:'', val:'', date:''},
-      {name:'', val:'', date:''},
-      {name:'', val:'', date:''},
-    ],
-    pris: Array.from({length:10}, () => ({gid:'', sip:'', lm:''})),
-    sipSurplus:0, lmSurplus:0
-  };
-}
-
-let ST = loadST();
-
-function loadST() {
-  try {
-    const r = localStorage.getItem(LS_KEY);
-    if (!r) return defState();
-    const sv = JSON.parse(r);
-    const d  = defState();
-    return {
-      s: {...d.s,...(sv.s||{})},
-      fixedGoals: d.fixedGoals.map((g,i) => {
-        const merged = {...g,...(sv.fixedGoals?.[i]||{})};
-        if (i === 0) merged.date = 'Immediate';
-        return merged;
-      }),
-      childGoals: (sv.childGoals && sv.childGoals.length)
-        ? sv.childGoals.map(c => ({childName:'',eduVal:'',eduDate:'',marryVal:'',marryDate:'',...c}))
-        : d.childGoals,
-      aspirationGoals: (sv.aspirationGoals && sv.aspirationGoals.length)
-        ? sv.aspirationGoals.map(a => ({name:'',val:'',date:'',...a}))
-        : d.aspirationGoals,
-      pris: sv.pris && sv.pris.length
-        ? sv.pris.map(p => ({gid:'',sip:'',lm:'',...p}))
-        : d.pris,
-      sipSurplus: sv.sipSurplus||0,
-      lmSurplus:  sv.lmSurplus ||0
-    };
-  } catch { return defState(); }
-}
-
-function saveST() { localStorage.setItem(LS_KEY, JSON.stringify(ST)); }
-
-/* ══ CALC ENGINE ══ */
-function parseMonths(raw) {
-  if (!raw || !raw.trim()) return 1;
-  const s = raw.trim();
-  if (s.toLowerCase() === 'immediate') return 1;
-  const MN = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
-  const today = new Date(); today.setDate(1); today.setHours(0,0,0,0);
-  const m1 = s.match(/^([A-Za-z]{3})-(\d{4})$/);
-  if (m1) {
-    const mo = MN.indexOf(m1[1].toLowerCase());
-    if (mo === -1) return 0;
-    const t = new Date(+m1[2], mo, 1);
-    return Math.max(1, (t.getFullYear()-today.getFullYear())*12+(t.getMonth()-today.getMonth()));
-  }
-  const m2 = s.match(/^(\d{1,2})\/(\d{4})$/);
-  if (m2) {
-    const t = new Date(+m2[2], +m2[1]-1, 1);
-    return Math.max(1, (t.getFullYear()-today.getFullYear())*12+(t.getMonth()-today.getMonth()));
-  }
-  const m3 = s.match(/^(\d{4})-(\d{1,2})$/);
-  if (m3) {
-    const t = new Date(+m3[1], +m3[2]-1, 1);
-    return Math.max(1, (t.getFullYear()-today.getFullYear())*12+(t.getMonth()-today.getMonth()));
-  }
-  return 0;
-}
-
-function rRate(mo, s) {
-  if (!mo) return 0;
-  if (mo <= 12)  return s.r1/100;
-  if (mo <= 24)  return s.r2/100;
-  if (mo <= 36)  return s.r3/100;
-  if (mo <= 120) return s.r4/100;
-  return s.r5/100;
-}
-
-function FV(r,n,pmt,pv){if(!r)return -(pv+pmt*n);const f=Math.pow(1+r,n);return -(pv*f+pmt*((f-1)/r));}
-function PMT(r,n,pv,fv){fv=fv||0;if(!r)return -(pv+fv)/n;const f=Math.pow(1+r,n);return -(pv*f+fv)/((f-1)/r);}
-function PV(r,n,pmt,fv){fv=fv||0;if(!r)return -(fv+pmt*n);const f=Math.pow(1+r,n);return -(fv+pmt*((f-1)/r))/f;}
-function r500(v){return Math.max(1000, Math.round(v/500)*500);}
-
-function computeGoal(val, date, isRet, s) {
-  const mo  = parseMonths(date);
-  const v   = parseFloat(val) || 0;
-  let target = null;
-  if (mo > 0 && v > 0) {
-    if (isRet) {
-      const mn = v * s.retMult;
-      const fn = FV(s.inflation/100/12, mo, 0, -mn);
-      target = (fn * 12) / (s.retRate / 100);
-    } else {
-      target = FV(s.inflation/100/12, mo, 0, -v);
-    }
-  }
-  const rt   = rRate(mo, s);
-  const rSIP = (target && mo > 0) ? r500(-PMT(rt/12, mo, 0, target)) : null;
-  const rLM  = (target && mo > 0) ? r500(-PV(rt/12, mo, 0, target))  : null;
-  return {mo, target, rSIP, rLM, rt};
-}
-
-function formatValueShort(v) {
-  const num = parseFloat(v)||0;
-  if (!num) return '';
-  if (num >= 1e7) return (num/1e7).toFixed(2)+' Cr';
-  if (num >= 1e5) return (num/1e5).toFixed(2)+' L';
-  if (num >= 1e3) return (num/1e3).toFixed(1)+'k';
-  return '';
-}
-
-function inr(v, d=0) {
-  if (v===null||v===undefined||isNaN(v)) return '—';
-  return '₹'+Number(v).toLocaleString('en-IN',{maximumFractionDigits:d,minimumFractionDigits:d});
-}
-
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function buildHint(val, isRet, s) {
-  const v = parseFloat(val)||0;
-  if (!v) return '';
-  if (isRet) return `${v} unit${v!==1?'s':''} = ₹${(v*s.retMult/1e5).toFixed(2)}L/mo`;
-  return formatValueShort(val) || '';
-}
-
-/* ══ SMART UPDATE — calc cells only ══ */
-function updateCalcCells() {
-  const s = ST.s;
-  let tSIP = 0, tLM = 0;
-
-  const rows = document.querySelectorAll('#goalsBody tr[data-gid]');
-  rows.forEach(tr => {
-    const gid = tr.dataset.gid;
-    if (!gid) return;
-
-    let val='', date='', isRet=false;
-
-    if (['liquidity','primary','secondary','retirement'].includes(gid)) {
-      const fi = FIXED_GOALS.findIndex(g => g.id === gid);
-      if (fi >= 0) {
-        val = ST.fixedGoals[fi].val;
-        date = (fi === 0) ? 'Immediate' : ST.fixedGoals[fi].date;
-        isRet = FIXED_GOALS[fi].isRet;
-      }
-    } else if (gid.match(/^child(\d+)_edu$/)) {
-      const ci = parseInt(gid.match(/^child(\d+)/)[1]);
-      if (ST.childGoals[ci]) { val = ST.childGoals[ci].eduVal; date = ST.childGoals[ci].eduDate; }
-    } else if (gid.match(/^child(\d+)_marry$/)) {
-      const ci = parseInt(gid.match(/^child(\d+)/)[1]);
-      if (ST.childGoals[ci]) { val = ST.childGoals[ci].marryVal; date = ST.childGoals[ci].marryDate; }
-    } else if (gid.match(/^asp(\d+)$/)) {
-      const ai = parseInt(gid.match(/^asp(\d+)/)[1]);
-      if (ST.aspirationGoals[ai]) { val = ST.aspirationGoals[ai].val; date = ST.aspirationGoals[ai].date; }
-    }
-
-    const {mo, target, rSIP, rLM} = computeGoal(val, date, isRet, s);
-    if (rSIP) tSIP += rSIP;
-    if (rLM)  tLM  += rLM;
-
-    const tds = tr.querySelectorAll('td');
-    if (tds.length < 8) return;
-
-    const tgtTd = tds[5];
-    if (!val) {
-      tgtTd.innerHTML = '<span class="cz">—</span>';
-    } else if (!target) {
-      tgtTd.innerHTML = '<span class="warn-cell">Enter valid date</span>';
-    } else {
-      tgtTd.innerHTML = `<span class="cv">${inr(target)}</span>`;
-    }
-
-    /* ── SIP: no /month label ── */
-    tds[6].innerHTML = rSIP ? `<span class="cv">${inr(rSIP)}</span>` : '<span class="cz">—</span>';
-    tds[7].innerHTML = rLM  ? `<span class="cv">${inr(rLM)}</span>`  : '<span class="cz">—</span>';
-
-    const valTd = tds[3];
-    let hintEl = valTd.querySelector('.cv-hint');
-    const hintText = buildHint(val, isRet, s);
-    if (hintText) {
-      if (!hintEl) { hintEl = document.createElement('small'); hintEl.className = 'cv-hint'; valTd.appendChild(hintEl); }
-      hintEl.textContent = hintText;
-    } else {
-      if (hintEl) hintEl.remove();
-    }
-
-    if (gid.match(/^child(\d+)_(edu|marry)$/)) {
-      const ci = parseInt(gid.match(/^child(\d+)/)[1]);
-      const type = gid.includes('_edu') ? 'Education' : 'Marriage';
-      const childLabel = (ST.childGoals[ci] && ST.childGoals[ci].childName) || `Child ${ci+1}`;
-      tds[1].innerHTML = `<strong style="font-size:.8rem">${esc(childLabel)} – ${type}</strong>`;
-    }
-  });
-
-  document.getElementById('totalSIP').textContent = inr(tSIP);
-  document.getElementById('totalLM').textContent  = inr(tLM);
-}
-
-/* ══ BUILD GOALS TABLE ══ */
-function buildGoals() {
-  const s     = ST.s;
-  const tbody = document.getElementById('goalsBody');
-  tbody.innerHTML = '';
-  const frag  = document.createDocumentFragment();
-  let rowNum  = 0;
-  let tSIP    = 0, tLM = 0;
-
-  function calcCells(val, date, isRet) {
-    const {mo, target, rSIP, rLM} = computeGoal(val, date, isRet, s);
-    if (rSIP) tSIP += rSIP;
-    if (rLM)  tLM  += rLM;
-    const tgtHtml = !val
-      ? `<span class="cz">—</span>`
-      : !target
-        ? `<span class="warn-cell">Enter valid date</span>`
-        : `<span class="cv">${inr(target)}</span>`;
-    /* SIP: no /month label */
-    const sipHtml = rSIP ? `<span class="cv">${inr(rSIP)}</span>` : `<span class="cz">—</span>`;
-    const lmHtml  = rLM  ? `<span class="cv">${inr(rLM)}</span>`  : `<span class="cz">—</span>`;
-    return {tgtHtml, sipHtml, lmHtml};
-  }
-
-  function hintHtml(val, isRet) {
-    const h = buildHint(val, isRet, s);
-    return h ? `<small class="cv-hint">${esc(h)}</small>` : '';
-  }
-
-  frag.appendChild(makeGroupHeader('', 9));
-
-  FIXED_GOALS.forEach((tmpl, i) => {
-    rowNum++;
-    const g = ST.fixedGoals[i];
-    const {tgtHtml, sipHtml, lmHtml} = calcCells(g.val, g.date, tmpl.isRet);
-    const tr = document.createElement('tr');
-    tr.dataset.gid = tmpl.id;
-
-    const dateCell = (i === 0)
-      ? `<span style="display:inline-flex;align-items:center;gap:.35rem;background:#e8f5e9;border:1.5px solid #43a047;border-radius:6px;padding:.28rem .6rem;font-size:.75rem;font-weight:700;color:#1b5e20;white-space:nowrap;">🔒 Immediate</span>`
-      : `<input class="ti" data-section="fixed" data-idx="${i}" data-field="date"
-          value="${esc(g.date)}" style="max-width:138px" autocomplete="off">`;
-
-    tr.innerHTML = `
-      <td style="color:var(--ink-lt);font-size:.7rem;text-align:center">${rowNum}</td>
-      <td><strong style="font-size:.8rem">${esc(tmpl.label)}</strong></td>
-      <td><span style="color:var(--ink-lt);font-size:.72rem">—</span></td>
-      <td>
-        <input class="ti" data-section="fixed" data-idx="${i}" data-field="val"
-          type="number" min="0" step="100" value="${esc(g.val)}"
-          placeholder="${tmpl.isRet?'units':'₹ amount'}" style="max-width:120px" autocomplete="off" inputmode="decimal">
-        ${hintHtml(g.val, tmpl.isRet)}
-      </td>
-      <td>${dateCell}</td>
-      <td>${tgtHtml}</td>
-      <td>${sipHtml}</td>
-      <td>${lmHtml}</td>
-      <td></td>
-    `;
-    frag.appendChild(tr);
-  });
-
-  /* ── Child Goals ── */
-  frag.appendChild(makeGroupHeader('', 9));
-
-  ST.childGoals.forEach((cg, ci) => {
-    const childLabel = cg.childName || `Child ${ci+1}`;
-    const delBtn = `<button class="del-btn" data-section="child" data-idx="${ci}" title="Remove child">✕</button>`;
-
-    rowNum++;
-    const {tgtHtml:etgt, sipHtml:esip, lmHtml:elm} = calcCells(cg.eduVal, cg.eduDate, false);
-    const eduTr = document.createElement('tr');
-    eduTr.dataset.gid = `child${ci}_edu`;
-    eduTr.innerHTML = `
-      <td style="color:var(--ink-lt);font-size:.7rem;text-align:center">${rowNum}</td>
-      <td><strong style="font-size:.8rem">${esc(childLabel)} – Education</strong></td>
-      <td><input class="ti" data-section="child" data-idx="${ci}" data-field="childName"
-          value="${esc(cg.childName)}" placeholder="Child's name…" style="max-width:110px" autocomplete="off"></td>
-      <td>
-        <input class="ti" data-section="child" data-idx="${ci}" data-field="eduVal"
-          type="number" min="0" step="100" value="${esc(cg.eduVal)}" placeholder="₹ amount" style="max-width:120px" autocomplete="off" inputmode="decimal">
-        ${hintHtml(cg.eduVal, false)}
-      </td>
-      <td><input class="ti" data-section="child" data-idx="${ci}" data-field="eduDate"
-          value="${esc(cg.eduDate)}"  style="max-width:138px" autocomplete="off"></td>
-      <td>${etgt}</td><td>${esip}</td><td>${elm}</td>
-      <td>${delBtn}</td>
-    `;
-    frag.appendChild(eduTr);
-
-    rowNum++;
-    const {tgtHtml:mtgt, sipHtml:msip, lmHtml:mlm} = calcCells(cg.marryVal, cg.marryDate, false);
-    const marTr = document.createElement('tr');
-    marTr.dataset.gid = `child${ci}_marry`;
-    marTr.innerHTML = `
-      <td style="color:var(--ink-lt);font-size:.7rem;text-align:center">${rowNum}</td>
-      <td><strong style="font-size:.8rem">${esc(childLabel)} – Marriage</strong></td>
-      <td><span style="color:var(--ink-lt);font-size:.72rem">↳ same child</span></td>
-      <td>
-        <input class="ti" data-section="child" data-idx="${ci}" data-field="marryVal"
-          type="number" min="0" step="100" value="${esc(cg.marryVal)}" placeholder="₹ amount" style="max-width:120px" autocomplete="off" inputmode="decimal">
-        ${hintHtml(cg.marryVal, false)}
-      </td>
-      <td><input class="ti" data-section="child" data-idx="${ci}" data-field="marryDate"
-          value="${esc(cg.marryDate)}"  style="max-width:138px" autocomplete="off"></td>
-      <td>${mtgt}</td><td>${msip}</td><td>${mlm}</td>
-      <td></td>
-    `;
-    frag.appendChild(marTr);
-  });
-
-  frag.appendChild(makeAddRow('child', '+ Add Child'));
-
-  /* ── Aspiration Goals ── */
-  frag.appendChild(makeGroupHeader('', 9));
-
-  ST.aspirationGoals.forEach((ag, ai) => {
-    rowNum++;
-    const {tgtHtml, sipHtml, lmHtml} = calcCells(ag.val, ag.date, false);
-    const tr = document.createElement('tr');
-    tr.dataset.gid = `asp${ai}`;
-    tr.innerHTML = `
-      <td style="color:var(--ink-lt);font-size:.7rem;text-align:center">${rowNum}</td>
-      <td><input class="ti" data-section="aspiration" data-idx="${ai}" data-field="name"
-          value="${esc(ag.name)}" placeholder="Aspiration Goal ${ai+1}" style="max-width:148px" autocomplete="off"></td>
-      <td><span style="color:var(--ink-lt);font-size:.72rem">—</span></td>
-      <td>
-        <input class="ti" data-section="aspiration" data-idx="${ai}" data-field="val"
-          type="number" min="0" step="100" value="${esc(ag.val)}" placeholder="₹ amount" style="max-width:120px" autocomplete="off" inputmode="decimal">
-        ${hintHtml(ag.val, false)}
-      </td>
-      <td><input class="ti" data-section="aspiration" data-idx="${ai}" data-field="date"
-          value="${esc(ag.date)}" style="max-width:138px" autocomplete="off"></td>
-      <td>${tgtHtml}</td><td>${sipHtml}</td><td>${lmHtml}</td>
-      <td><button class="del-btn" data-section="aspiration" data-idx="${ai}" title="Remove">✕</button></td>
-    `;
-    frag.appendChild(tr);
-  });
-
-  frag.appendChild(makeAddRow('aspiration', '+ Add Aspiration Goal'));
-
-  tbody.appendChild(frag);
-  document.getElementById('totalSIP').textContent = inr(tSIP);
-  document.getElementById('totalLM').textContent  = inr(tLM);
-  applyAllDateLocks();
-}
-
-function makeGroupHeader(label, colspan) {
-  const tr = document.createElement('tr');
-  tr.className = 'grp-row';
-  tr.innerHTML = `<td colspan="${colspan}">▸ ${label}</td>`;
-  return tr;
-}
-
-function makeAddRow(section, btnLabel) {
-  const tr = document.createElement('tr');
-  tr.innerHTML = `<td colspan="9" class="add-row-cell"><button class="add-row-btn" data-addsection="${section}">${btnLabel}</button></td>`;
-  return tr;
-}
-
-/* ══ DATE LOCK ══ */
-function applyDateLockState(input) {
-  const v = (input.value || '').trim();
-  const isImm = v.toLowerCase() === 'immediate';
-  if (isImm) {
-    input.readOnly = true;
-    input.style.background    = '#e8f5e9';
-    input.style.borderColor   = '#43a047';
-    input.style.color         = '#1b5e20';
-    input.style.fontWeight    = '700';
-    input.style.cursor        = 'not-allowed';
-    input.title               = 'Locked to Immediate — clear to change';
-    if (!input.nextElementSibling || !input.nextElementSibling.classList.contains('imm-unlock')) {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'imm-unlock';
-      btn.textContent = '✕';
-      btn.title = 'Unlock / clear';
-      btn.style.cssText = 'margin-left:4px;background:none;border:1px solid #43a047;color:#1b5e20;border-radius:4px;cursor:pointer;font-size:.7rem;padding:2px 6px;vertical-align:middle;line-height:1;';
-      btn.addEventListener('click', () => {
-        input.readOnly = false;
-        input.value = '';
-        input.style.cssText = '';
-        input.title = '';
-        btn.remove();
-        input.dispatchEvent(new Event('input', {bubbles:true}));
-        input.focus();
-      });
-      input.after(btn);
-    }
-  } else {
-    input.readOnly = false;
-    input.style.background  = '';
-    input.style.borderColor = '';
-    input.style.color       = '';
-    input.style.fontWeight  = '';
-    input.style.cursor      = '';
-    input.title             = '';
-    const btn = input.nextElementSibling;
-    if (btn && btn.classList.contains('imm-unlock')) btn.remove();
-  }
-}
-
-function applyAllDateLocks() {
-  document.querySelectorAll('#goalsBody input[data-field="date"], #goalsBody input[data-field="eduDate"], #goalsBody input[data-field="marryDate"]').forEach(applyDateLockState);
-}
-
-/* ══ EVENTS ══ */
-document.getElementById('goalsBody').addEventListener('input', e => {
-  const el = e.target;
-  const sec   = el.dataset.section;
-  const idx   = parseInt(el.dataset.idx);
-  const field = el.dataset.field;
-  if (!sec || isNaN(idx) || !field) return;
-
-  if (sec === 'fixed') {
-    if (idx === 0 && field === 'date') return;
-    ST.fixedGoals[idx][field] = el.value;
-  }
-  else if (sec === 'child')      ST.childGoals[idx][field]      = el.value;
-  else if (sec === 'aspiration') ST.aspirationGoals[idx][field] = el.value;
-
-  if (field === 'date' || field === 'eduDate' || field === 'marryDate') {
-    applyDateLockState(el);
-  }
-
-  updateCalcCells();
-  saveST();
-});
-
-document.getElementById('goalsBody').addEventListener('click', e => {
-  const addBtn = e.target.closest('[data-addsection]');
-  if (addBtn) {
-    const sec = addBtn.dataset.addsection;
-    if (sec === 'child')       ST.childGoals.push({childName:'', eduVal:'', eduDate:'', marryVal:'', marryDate:''});
-    else if (sec === 'aspiration') ST.aspirationGoals.push({name:'', val:'', date:''});
-    buildGoals(); saveST(); return;
-  }
-
-  const delBtn = e.target.closest('.del-btn[data-section][data-idx]');
-  if (delBtn) {
-    const sec = delBtn.dataset.section;
-    const idx = parseInt(delBtn.dataset.idx);
-    if (sec === 'child') {
-      if (ST.childGoals.length <= 1) { toast('At least one child goal group must remain.'); return; }
-      ST.childGoals.splice(idx, 1);
-    } else if (sec === 'aspiration') {
-      if (ST.aspirationGoals.length <= 1) { toast('At least one aspiration goal must remain.'); return; }
-      ST.aspirationGoals.splice(idx, 1);
-    }
-    buildGoals(); saveST();
-  }
-});
-
-document.getElementById('resetBtn').addEventListener('click', () => {
-  if (!confirm('Reset ALL data to defaults? This will also clear Section 2. Cannot be undone.')) return;
-  ST = defState();
-  localStorage.removeItem(LS_KEY);
-  buildGoals();
-  toast('All data reset to defaults.');
-});
-
-/* ══ TOAST ══ */
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  clearTimeout(window._tt);
-  window._tt = setTimeout(() => t.classList.remove('show'), 2600);
-}
-
-/* ══ INIT ══ */
-buildGoals();
-applyAllDateLocks();
-</script>
+    <header class="hdr">
+        <div class="hdr-in">
+            <div class="hdr-top">
+                <div class="logo"><span class="logo-ic">*</span><span>Goal Setting</span></div><button class="rst-btn"
+                    id="resetBtn">Reset</button>
+            </div>
+            <nav class="tab-nav"><a class="tbtn" href="#section1">Section 1 - Goals</a><a class="tbtn"
+                    href="#section2">Section 2 - Priority</a></nav>
+        </div>
+    </header>
+    <main class="main">
+        <div class="pdf-bar"><span class="pdf-tip">Saves both sections as one PDF</span><button class="pdf-btn"
+                id="savePdfBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 15V3m0 12-4-4m4 4 4-4" />
+                    <rect x="2" y="17" width="20" height="4" rx="1" />
+                </svg>Save Full Plan as PDF</button></div>
+        <section id="section1" class="section-card">
+            <h2 class="section-title">Section 1 - Goals</h2>
+            <p class="section-sub">Define goal values and timelines. Required SIP and lump sum are calculated
+                automatically.</p>
+            <p class="scroll-hint">Scroll horizontally for full table</p>
+            <div class="tscroll-goals">
+                <table class="goals-tbl">
+                    <thead>
+                        <tr>
+                            <th style="width:28px">#</th>
+                            <th>Goal</th>
+                            <th style="min-width:110px">Child / Custom Name</th>
+                            <th class="th-user" style="min-width:130px">Current Value</th>
+                            <th class="th-user" style="min-width:135px">Target Month-Year</th>
+                            <th class="th-calc">Target Amount (INR)</th>
+                            <th class="th-calc">Required SIP (INR/month)</th>
+                            <th class="th-calc">Required Lump Sum (INR)</th>
+                            <th style="width:36px"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="goalsBody"></tbody>
+                    <tfoot>
+                        <tr class="tot-row">
+                            <td colspan="5">TOTAL REQUIRED SIP AND LUMP SUM</td>
+                            <td></td>
+                            <td id="totalSIP" class="tot-val">INR 0</td>
+                            <td id="totalLM" class="tot-val">INR 0</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+        <section id="section2" class="section-card">
+            <h2 class="section-title">Section 2 - Priority</h2>
+            <p class="section-sub">Allocate SIP and lump sum by priority to see whether each goal stays on track.</p>
+            <div class="surp">
+                <div class="surp-it"><label>Monthly SIP Surplus (INR)</label><input type="number" id="sipSurplus"
+                        class="si" value="0" min="0" step="any" inputmode="numeric" placeholder="0" />
+                    <div class="surp-words" id="sipWords"></div>
+                </div>
+                <div class="surp-it"><label>Lump Sum to Deploy (INR)</label><input type="number" id="lmSurplus"
+                        class="si" value="0" min="0" step="any" inputmode="numeric" placeholder="0" />
+                    <div class="surp-words" id="lmWords"></div>
+                </div>
+            </div>
+            <div class="surp-warning" id="surpWarning"><span class="warn-icon" id="surpWarnIcon">!</span>
+                <div class="warn-lines" id="surpWarningText"></div>
+            </div>
+            <p class="scroll-hint">Scroll horizontally for full table</p>
+            <div class="tscroll-pri">
+                <table class="pri-tbl">
+                    <thead>
+                        <tr>
+                            <th style="width:60px;text-align:center">Priority</th>
+                            <th style="min-width:175px">Goal Name</th>
+                            <th style="min-width:110px">Target Date</th>
+                            <th class="th-calc" style="min-width:110px">Required SIP</th>
+                            <th class="th-calc" style="min-width:110px">Required Lump Sum</th>
+                            <th class="th-user" style="min-width:110px">Your SIP</th>
+                            <th class="th-user" style="min-width:110px">Your Lump Sum</th>
+                            <th class="th-calc" style="min-width:140px">Projection @ Maturity</th>
+                            <th style="min-width:80px">Goal Status</th>
+                            <th class="th-calc" style="min-width:110px">Addl. SIP Needed</th>
+                            <th class="th-calc" style="min-width:110px">Addl. Lump Sum Needed</th>
+                        </tr>
+                    </thead>
+                    <tbody id="priorityBody"></tbody>
+                    <tfoot>
+                        <tr class="tot-row">
+                            <td colspan="5">TOTAL ALLOCATED</td>
+                            <td id="allocSIP" class="tot-val">INR 0</td>
+                            <td id="allocLM" class="tot-val">INR 0</td>
+                            <td colspan="4"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="mobile-cards" id="mobileCards"></div>
+        </section>
+    </main>
+    <div class="toast" id="toast"></div>
+    <script>
+        const DEF_S = { inflation: 6, r1: 5, r2: 8, r3: 9, r4: 11, r5: 10, retMult: 100000, retRate: 6 };
+        const FIXED_GOALS = [{ id: 'liquidity', label: 'Liquidity / Emergency Fund', isRet: false }, { id: 'primary', label: 'Primary Residence', isRet: false }, { id: 'secondary', label: 'Secondary Residence / Plot', isRet: false }, { id: 'retirement', label: 'Retirement Corpus', isRet: true }];
+        const LS_KEY = 'finsc_v5';
+        function defState() { return { s: { ...DEF_S }, fixedGoals: FIXED_GOALS.map((g, i) => ({ val: '', date: i === 0 ? 'Immediate' : '', name: '' })), childGoals: [{ childName: '', eduVal: '', eduDate: '', marryVal: '', marryDate: '' }, { childName: '', eduVal: '', eduDate: '', marryVal: '', marryDate: '' }], aspirationGoals: [{ name: '', val: '', date: '' }, { name: '', val: '', date: '' }, { name: '', val: '', date: '' }], pris: Array.from({ length: 10 }, () => ({ gid: '', sip: '', lm: '' })), sipSurplus: 0, lmSurplus: 0 }; }
+        let ST = loadST();
+        function loadST() { try { const raw = localStorage.getItem(LS_KEY); if (!raw) return defState(); const sv = JSON.parse(raw); const d = defState(); return { s: { ...d.s, ...(sv.s || {}) }, fixedGoals: d.fixedGoals.map((g, i) => { const merged = { ...g, ...(sv.fixedGoals?.[i] || {}) }; if (i === 0) merged.date = 'Immediate'; return merged; }), childGoals: (sv.childGoals && sv.childGoals.length) ? sv.childGoals.map(c => ({ childName: '', eduVal: '', eduDate: '', marryVal: '', marryDate: '', ...c })) : d.childGoals, aspirationGoals: (sv.aspirationGoals && sv.aspirationGoals.length) ? sv.aspirationGoals.map(a => ({ name: '', val: '', date: '', ...a })) : d.aspirationGoals, pris: sv.pris && sv.pris.length ? sv.pris.map(p => ({ gid: '', sip: '', lm: '', ...p })) : d.pris, sipSurplus: sv.sipSurplus || 0, lmSurplus: sv.lmSurplus || 0 }; } catch { return defState(); } }
+        function saveST() { localStorage.setItem(LS_KEY, JSON.stringify(ST)); }
+        const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+        function numToWordsIndian(n) { n = Math.floor(n); if (!n || n < 0) return ''; if (n === 0) return 'Zero'; function below100(num) { if (num < 20) return ones[num]; return tens[Math.floor(num / 10)] + (num % 10 ? ' ' + ones[num % 10] : ''); } function below1000(num) { if (num < 100) return below100(num); return ones[Math.floor(num / 100)] + ' Hundred' + (num % 100 ? ' ' + below100(num % 100) : ''); } let result = ''; const cr = Math.floor(n / 1e7); n %= 1e7; const lac = Math.floor(n / 1e5); n %= 1e5; const th = Math.floor(n / 1e3); n %= 1e3; const rem = n; if (cr) result += below1000(cr) + ' Crore '; if (lac) result += below100(lac) + ' Lakh '; if (th) result += below1000(th) + ' Thousand '; if (rem) result += below1000(rem); return result.trim(); }
+        function amountWords(val) { const num = parseFloat(val) || 0; if (!num) return ''; let shortTag = ''; if (num >= 1e7) shortTag = 'INR ' + (num / 1e7).toFixed(2) + ' Cr'; else if (num >= 1e5) shortTag = 'INR ' + (num / 1e5).toFixed(2) + ' L'; const words = numToWordsIndian(num); return words ? (shortTag ? shortTag + ' - ' + words : words) : ''; }
+        function updateWordsDisplay(inputId, displayId) { const val = document.getElementById(inputId).value; document.getElementById(displayId).textContent = amountWords(val); }
+        function parseMonths(raw) { if (!raw || !raw.trim()) return 1; const s = raw.trim(); if (s.toLowerCase() === 'immediate') return 1; const MN = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']; const today = new Date(); today.setDate(1); today.setHours(0, 0, 0, 0); const m1 = s.match(/^([A-Za-z]{3})-(\d{4})$/); if (m1) { const mo = MN.indexOf(m1[1].toLowerCase()); if (mo === -1) return 0; const t = new Date(+m1[2], mo, 1); return Math.max(1, (t.getFullYear() - today.getFullYear()) * 12 + (t.getMonth() - today.getMonth())); } const m2 = s.match(/^(\d{1,2})\/(\d{4})$/); if (m2) { const t = new Date(+m2[2], +m2[1] - 1, 1); return Math.max(1, (t.getFullYear() - today.getFullYear()) * 12 + (t.getMonth() - today.getMonth())); } const m3 = s.match(/^(\d{4})-(\d{1,2})$/); if (m3) { const t = new Date(+m3[1], +m3[2] - 1, 1); return Math.max(1, (t.getFullYear() - today.getFullYear()) * 12 + (t.getMonth() - today.getMonth())); } return 0; }
+        function rRate(mo, s) { if (!mo) return 0; if (mo <= 12) return s.r1 / 100; if (mo <= 24) return s.r2 / 100; if (mo <= 36) return s.r3 / 100; if (mo <= 120) return s.r4 / 100; return s.r5 / 100; }
+        function FV(r, n, pmt, pv) { if (!r) return -(pv + pmt * n); const f = Math.pow(1 + r, n); return -(pv * f + pmt * ((f - 1) / r)); }
+        function PMT(r, n, pv, fv) { fv = fv || 0; if (!r) return -(pv + fv) / n; const f = Math.pow(1 + r, n); return -(pv * f + fv) / ((f - 1) / r); }
+        function PV(r, n, pmt, fv) { fv = fv || 0; if (!r) return -(fv + pmt * n); const f = Math.pow(1 + r, n); return -(fv + pmt * ((f - 1) / r)) / f; }
+        function r500(v) { return Math.max(1000, Math.round(v / 500) * 500); }
+        function computeGoal(val, date, isRet, s) { const mo = parseMonths(date); const v = parseFloat(val) || 0; let target = null; if (mo > 0 && v > 0) { if (isRet) { const mn = v * s.retMult; const fn = FV(s.inflation / 100 / 12, mo, 0, -mn); target = (fn * 12) / (s.retRate / 100); } else { target = FV(s.inflation / 100 / 12, mo, 0, -v); } } const rt = rRate(mo, s); const rSIP = (target && mo > 0) ? r500(-PMT(rt / 12, mo, 0, target)) : null; const rLM = (target && mo > 0) ? r500(-PV(rt / 12, mo, 0, target)) : null; return { mo, target, rSIP, rLM, rt }; }
+        function formatValueShort(v) { const num = parseFloat(v) || 0; if (!num) return ''; if (num >= 1e7) return (num / 1e7).toFixed(2) + ' Cr'; if (num >= 1e5) return (num / 1e5).toFixed(2) + ' L'; if (num >= 1e3) return (num / 1e3).toFixed(1) + 'k'; return ''; }
+        function inr(v, d = 0) { if (v === null || v === undefined || isNaN(v)) return '-'; return 'INR ' + Number(v).toLocaleString('en-IN', { maximumFractionDigits: d, minimumFractionDigits: d }); }
+        function inrSh(v) { if (!v || isNaN(v) || v === 0) return '-'; if (v >= 1e7) return 'INR ' + (v / 1e7).toFixed(2) + ' Cr'; if (v >= 1e5) return 'INR ' + (v / 1e5).toFixed(2) + ' L'; return inr(v); }
+        function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;'); }
+        function buildHint(val, isRet, s) { const v = parseFloat(val) || 0; if (!v) return ''; if (isRet) return v + ' unit' + (v !== 1 ? 's' : '') + ' = INR ' + (v * s.retMult / 1e5).toFixed(2) + 'L/mo'; return formatValueShort(val) || ''; }
+        function makeGroupHeader(label, colspan) { const tr = document.createElement('tr'); tr.className = 'grp-row'; tr.innerHTML = '<td colspan="' + colspan + '">' + label + '</td>'; return tr; }
+        function makeAddRow(section, btnLabel) { const tr = document.createElement('tr'); tr.innerHTML = '<td colspan="9" class="add-row-cell"><button class="add-row-btn" data-addsection="' + section + '">' + btnLabel + '</button></td>'; return tr; }
+        function updateCalcCells() { const s = ST.s; let tSIP = 0, tLM = 0; const rows = document.querySelectorAll('#goalsBody tr[data-gid]'); rows.forEach(tr => { const gid = tr.dataset.gid; if (!gid) return; let val = '', date = '', isRet = false; if (['liquidity', 'primary', 'secondary', 'retirement'].includes(gid)) { const fi = FIXED_GOALS.findIndex(g => g.id === gid); if (fi >= 0) { val = ST.fixedGoals[fi].val; date = (fi === 0) ? 'Immediate' : ST.fixedGoals[fi].date; isRet = FIXED_GOALS[fi].isRet; } } else if (gid.match(/^child(\d+)_edu$/)) { const ci = parseInt(gid.match(/^child(\d+)/)[1], 10); if (ST.childGoals[ci]) { val = ST.childGoals[ci].eduVal; date = ST.childGoals[ci].eduDate; } } else if (gid.match(/^child(\d+)_marry$/)) { const ci = parseInt(gid.match(/^child(\d+)/)[1], 10); if (ST.childGoals[ci]) { val = ST.childGoals[ci].marryVal; date = ST.childGoals[ci].marryDate; } } else if (gid.match(/^asp(\d+)$/)) { const ai = parseInt(gid.match(/^asp(\d+)/)[1], 10); if (ST.aspirationGoals[ai]) { val = ST.aspirationGoals[ai].val; date = ST.aspirationGoals[ai].date; } } const out = computeGoal(val, date, isRet, s); if (out.rSIP) tSIP += out.rSIP; if (out.rLM) tLM += out.rLM; const tds = tr.querySelectorAll('td'); if (tds.length < 8) return; if (!val) tds[5].innerHTML = '<span class="cz">-</span>'; else if (!out.target) tds[5].innerHTML = '<span class="warn-cell">Enter valid date</span>'; else tds[5].innerHTML = '<span class="cv">' + inr(out.target) + '</span>'; tds[6].innerHTML = out.rSIP ? '<span class="cv">' + inr(out.rSIP) + '</span>' : '<span class="cz">-</span>'; tds[7].innerHTML = out.rLM ? '<span class="cv">' + inr(out.rLM) + '</span>' : '<span class="cz">-</span>'; const valTd = tds[3]; let hintEl = valTd.querySelector('.cv-hint'); const hintText = buildHint(val, isRet, s); if (hintText) { if (!hintEl) { hintEl = document.createElement('small'); hintEl.className = 'cv-hint'; valTd.appendChild(hintEl); } hintEl.textContent = hintText; } else if (hintEl) hintEl.remove(); if (gid.match(/^child(\d+)_(edu|marry)$/)) { const ci = parseInt(gid.match(/^child(\d+)/)[1], 10); const type = gid.includes('_edu') ? 'Education' : 'Marriage'; const childLabel = (ST.childGoals[ci] && ST.childGoals[ci].childName) || ('Child ' + (ci + 1)); tds[1].innerHTML = '<strong style="font-size:.8rem">' + esc(childLabel) + ' - ' + type + '</strong>'; } }); document.getElementById('totalSIP').textContent = inr(tSIP); document.getElementById('totalLM').textContent = inr(tLM); }
+        function buildGoals() { const s = ST.s; const tbody = document.getElementById('goalsBody'); tbody.innerHTML = ''; const frag = document.createDocumentFragment(); let rowNum = 0; let tSIP = 0, tLM = 0; function calcCells(val, date, isRet) { const out = computeGoal(val, date, isRet, s); if (out.rSIP) tSIP += out.rSIP; if (out.rLM) tLM += out.rLM; const tgtHtml = !val ? '<span class="cz">-</span>' : (!out.target ? '<span class="warn-cell">Enter valid date</span>' : '<span class="cv">' + inr(out.target) + '</span>'); const sipHtml = out.rSIP ? '<span class="cv">' + inr(out.rSIP) + '</span>' : '<span class="cz">-</span>'; const lmHtml = out.rLM ? '<span class="cv">' + inr(out.rLM) + '</span>' : '<span class="cz">-</span>'; return { tgtHtml, sipHtml, lmHtml }; } function hintHtml(val, isRet) { const h = buildHint(val, isRet, s); return h ? '<small class="cv-hint">' + esc(h) + '</small>' : ''; } frag.appendChild(makeGroupHeader('Fixed Goals', 9)); FIXED_GOALS.forEach((tmpl, i) => { rowNum++; const g = ST.fixedGoals[i]; const out = calcCells(g.val, g.date, tmpl.isRet); const tr = document.createElement('tr'); tr.dataset.gid = tmpl.id; const dateCell = (i === 0) ? '<span style="display:inline-flex;align-items:center;gap:.35rem;background:#e8f5e9;border:1.5px solid #43a047;border-radius:6px;padding:.28rem .6rem;font-size:.75rem;font-weight:700;color:#1b5e20;white-space:nowrap;">Immediate</span>' : '<input class="ti" data-section="fixed" data-idx="' + i + '" data-field="date" value="' + esc(g.date) + '" style="max-width:138px" autocomplete="off">'; tr.innerHTML = '<td style="color:var(--ink-lt);font-size:.7rem;text-align:center">' + rowNum + '</td><td><strong style="font-size:.8rem">' + esc(tmpl.label) + '</strong></td><td><span style="color:var(--ink-lt);font-size:.72rem">-</span></td><td><input class="ti" data-section="fixed" data-idx="' + i + '" data-field="val" type="number" min="0" step="100" value="' + esc(g.val) + '" placeholder="' + (tmpl.isRet ? 'units' : 'INR amount') + '" style="max-width:120px" autocomplete="off" inputmode="decimal">' + hintHtml(g.val, tmpl.isRet) + '</td><td>' + dateCell + '</td><td>' + out.tgtHtml + '</td><td>' + out.sipHtml + '</td><td>' + out.lmHtml + '</td><td></td>'; frag.appendChild(tr); }); frag.appendChild(makeGroupHeader('Child Goals', 9)); ST.childGoals.forEach((cg, ci) => { const childLabel = cg.childName || ('Child ' + (ci + 1)); const delBtn = '<button class="del-btn" data-section="child" data-idx="' + ci + '" title="Remove child">X</button>'; rowNum++; const e = calcCells(cg.eduVal, cg.eduDate, false); const eduTr = document.createElement('tr'); eduTr.dataset.gid = 'child' + ci + '_edu'; eduTr.innerHTML = '<td style="color:var(--ink-lt);font-size:.7rem;text-align:center">' + rowNum + '</td><td><strong style="font-size:.8rem">' + esc(childLabel) + ' - Education</strong></td><td><input class="ti" data-section="child" data-idx="' + ci + '" data-field="childName" value="' + esc(cg.childName) + '" placeholder="Child name" style="max-width:110px" autocomplete="off"></td><td><input class="ti" data-section="child" data-idx="' + ci + '" data-field="eduVal" type="number" min="0" step="100" value="' + esc(cg.eduVal) + '" placeholder="INR amount" style="max-width:120px" autocomplete="off" inputmode="decimal">' + hintHtml(cg.eduVal, false) + '</td><td><input class="ti" data-section="child" data-idx="' + ci + '" data-field="eduDate" value="' + esc(cg.eduDate) + '" style="max-width:138px" autocomplete="off"></td><td>' + e.tgtHtml + '</td><td>' + e.sipHtml + '</td><td>' + e.lmHtml + '</td><td>' + delBtn + '</td>'; frag.appendChild(eduTr); rowNum++; const m = calcCells(cg.marryVal, cg.marryDate, false); const marTr = document.createElement('tr'); marTr.dataset.gid = 'child' + ci + '_marry'; marTr.innerHTML = '<td style="color:var(--ink-lt);font-size:.7rem;text-align:center">' + rowNum + '</td><td><strong style="font-size:.8rem">' + esc(childLabel) + ' - Marriage</strong></td><td><span style="color:var(--ink-lt);font-size:.72rem">same child</span></td><td><input class="ti" data-section="child" data-idx="' + ci + '" data-field="marryVal" type="number" min="0" step="100" value="' + esc(cg.marryVal) + '" placeholder="INR amount" style="max-width:120px" autocomplete="off" inputmode="decimal">' + hintHtml(cg.marryVal, false) + '</td><td><input class="ti" data-section="child" data-idx="' + ci + '" data-field="marryDate" value="' + esc(cg.marryDate) + '" style="max-width:138px" autocomplete="off"></td><td>' + m.tgtHtml + '</td><td>' + m.sipHtml + '</td><td>' + m.lmHtml + '</td><td></td>'; frag.appendChild(marTr); }); frag.appendChild(makeAddRow('child', '+ Add Child')); frag.appendChild(makeGroupHeader('Aspiration Goals', 9)); ST.aspirationGoals.forEach((ag, ai) => { rowNum++; const out = calcCells(ag.val, ag.date, false); const tr = document.createElement('tr'); tr.dataset.gid = 'asp' + ai; tr.innerHTML = '<td style="color:var(--ink-lt);font-size:.7rem;text-align:center">' + rowNum + '</td><td><input class="ti" data-section="aspiration" data-idx="' + ai + '" data-field="name" value="' + esc(ag.name) + '" placeholder="Aspiration Goal ' + (ai + 1) + '" style="max-width:148px" autocomplete="off"></td><td><span style="color:var(--ink-lt);font-size:.72rem">-</span></td><td><input class="ti" data-section="aspiration" data-idx="' + ai + '" data-field="val" type="number" min="0" step="100" value="' + esc(ag.val) + '" placeholder="INR amount" style="max-width:120px" autocomplete="off" inputmode="decimal">' + hintHtml(ag.val, false) + '</td><td><input class="ti" data-section="aspiration" data-idx="' + ai + '" data-field="date" value="' + esc(ag.date) + '" style="max-width:138px" autocomplete="off"></td><td>' + out.tgtHtml + '</td><td>' + out.sipHtml + '</td><td>' + out.lmHtml + '</td><td><button class="del-btn" data-section="aspiration" data-idx="' + ai + '" title="Remove">X</button></td>'; frag.appendChild(tr); }); frag.appendChild(makeAddRow('aspiration', '+ Add Aspiration Goal')); tbody.appendChild(frag); document.getElementById('totalSIP').textContent = inr(tSIP); document.getElementById('totalLM').textContent = inr(tLM); applyAllDateLocks(); }
+        function applyDateLockState(input) { const v = (input.value || '').trim(); const isImm = v.toLowerCase() === 'immediate'; if (isImm) { input.readOnly = true; input.style.background = '#e8f5e9'; input.style.borderColor = '#43a047'; input.style.color = '#1b5e20'; input.style.fontWeight = '700'; input.style.cursor = 'not-allowed'; if (!input.nextElementSibling || !input.nextElementSibling.classList.contains('imm-unlock')) { const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'imm-unlock'; btn.textContent = 'X'; btn.style.cssText = 'margin-left:4px;background:none;border:1px solid #43a047;color:#1b5e20;border-radius:4px;cursor:pointer;font-size:.7rem;padding:2px 6px;vertical-align:middle;line-height:1;'; btn.addEventListener('click', () => { input.readOnly = false; input.value = ''; input.style.cssText = ''; btn.remove(); input.dispatchEvent(new Event('input', { bubbles: true })); input.focus(); }); input.after(btn); } } else { input.readOnly = false; input.style.background = ''; input.style.borderColor = ''; input.style.color = ''; input.style.fontWeight = ''; input.style.cursor = ''; const btn = input.nextElementSibling; if (btn && btn.classList.contains('imm-unlock')) btn.remove(); } }
+        function applyAllDateLocks() { document.querySelectorAll('#goalsBody input[data-field="date"], #goalsBody input[data-field="eduDate"], #goalsBody input[data-field="marryDate"]').forEach(applyDateLockState); }
+        function buildGoalMap() { const s = ST.s; const gmap = {}; FIXED_GOALS.forEach((tmpl, i) => { const g = ST.fixedGoals[i]; const date = (i === 0) ? 'Immediate' : g.date; const c = computeGoal(g.val, date, tmpl.isRet, s); gmap[tmpl.id] = { ...c, label: tmpl.label, date }; }); ST.childGoals.forEach((cg, ci) => { const childLabel = cg.childName || ('Child ' + (ci + 1)); const cEdu = computeGoal(cg.eduVal, cg.eduDate, false, s); gmap['child' + ci + '_edu'] = { ...cEdu, label: childLabel + ' - Education', date: cg.eduDate }; const cMar = computeGoal(cg.marryVal, cg.marryDate, false, s); gmap['child' + ci + '_marry'] = { ...cMar, label: childLabel + ' - Marriage', date: cg.marryDate }; }); ST.aspirationGoals.forEach((ag, ai) => { const c = computeGoal(ag.val, ag.date, false, s); gmap['asp' + ai] = { ...c, label: ag.name || ('Aspiration Goal ' + (ai + 1)), date: ag.date }; }); return gmap; }
+        function priCalc(pr, gmap, s) { const NA = { proj: 0, target: null, status: 'na', addSIP: null, addLM: null }; if (!pr.gid) return NA; const gd = gmap[pr.gid]; if (!gd || !gd.target || !gd.mo) return NA; const mo = gd.mo, target = gd.target, rt = gd.rt; const sip = parseFloat(pr.sip) || 0; const lm = parseFloat(pr.lm) || 0; const proj = FV(rt / 12, mo, -sip, -lm); const ok = proj >= target; let addSIP = null, addLM = null; if (!ok) { const g1 = target - FV(rt / 12, mo, 0, -lm); if (g1 > 0) addSIP = r500(-PMT(rt / 12, mo, 0, g1)); const g2 = target - FV(rt / 12, mo, -sip, 0); if (g2 > 0) addLM = r500(-PV(rt / 12, mo, 0, g2)); } return { proj, target, status: ok ? 'on' : 'off', addSIP, addLM }; }
+        function updateSurplusWarning() { const sipAvail = parseFloat(ST.sipSurplus) || 0; const lmAvail = parseFloat(ST.lmSurplus) || 0; let allocSIP = 0, allocLM = 0; ST.pris.forEach(p => { allocSIP += parseFloat(p.sip) || 0; allocLM += parseFloat(p.lm) || 0; }); const warnEl = document.getElementById('surpWarning'); const warnText = document.getElementById('surpWarningText'); const warnIcon = document.getElementById('surpWarnIcon'); const msgs = { orange: [], red: [] }; if (sipAvail === 0 && allocSIP > 0) msgs.orange.push('You entered ' + inr(allocSIP) + '/mo SIP without Monthly SIP Surplus.'); else if (sipAvail > 0 && allocSIP > sipAvail) msgs.red.push('Total SIP ' + inr(allocSIP) + '/mo exceeds surplus ' + inr(sipAvail) + '/mo by ' + inr(allocSIP - sipAvail) + '/mo.'); if (lmAvail === 0 && allocLM > 0) msgs.orange.push('You entered ' + inr(allocLM) + ' lump sum without Lump Sum to Deploy.'); else if (lmAvail > 0 && allocLM > lmAvail) msgs.red.push('Total lump sum ' + inr(allocLM) + ' exceeds declared ' + inr(lmAvail) + ' by ' + inr(allocLM - lmAvail) + '.'); const allMsgs = msgs.red.concat(msgs.orange); if (!allMsgs.length) { warnEl.classList.remove('visible'); return; } if (msgs.red.length) { warnEl.style.background = '#fde8e6'; warnEl.style.borderColor = '#c0392b'; warnEl.style.color = '#7a0e00'; warnIcon.textContent = '!'; } else { warnEl.style.background = '#fff0e6'; warnEl.style.borderColor = '#e07030'; warnEl.style.color = '#7a2e00'; warnIcon.textContent = '!'; } warnText.innerHTML = allMsgs.map(m => '<span>' + m + '</span>').join(''); warnEl.classList.add('visible'); }
+        function buildPriority() { const s = ST.s; const tbody = document.getElementById('priorityBody'); const gmap = buildGoalMap(); const available = Object.entries(gmap).filter(([, gd]) => gd.target).map(([id, gd]) => ({ id, label: gd.label })); const pickedSet = new Set(ST.pris.map(p => p.gid).filter(Boolean)); let allocSIP = 0, allocLM = 0; const frag = document.createDocumentFragment(); ST.pris.forEach((pr, i) => { const pd = priCalc(pr, gmap, s); allocSIP += parseFloat(pr.sip) || 0; allocLM += parseFloat(pr.lm) || 0; const gd = pr.gid ? gmap[pr.gid] : null; let opts = '<option value="">- select goal -</option>'; available.forEach(ag => { if (pickedSet.has(ag.id) && ag.id !== pr.gid) return; opts += '<option value="' + ag.id + '"' + (ag.id === pr.gid ? ' selected' : '') + '>' + esc(ag.label) + '</option>'; }); const tDate = gd ? gd.date : '-'; const rSIPd = gd && gd.rSIP ? inr(gd.rSIP) : '-'; const rLMd = gd && gd.rLM ? inr(gd.rLM) : '-'; let badge = '<span class="bdg bdg-na">-</span>'; if (pd.status === 'on') badge = '<span class="bdg bdg-on">On Track</span>'; if (pd.status === 'off') badge = '<span class="bdg bdg-off">Invest More</span>'; let projHtml = '<span class="cz">-</span>'; if (pd.proj && pd.target) { const pct = (pd.proj / pd.target * 100).toFixed(0); const col = pd.status === 'on' ? 'var(--green)' : 'var(--amber)'; projHtml = '<strong style="color:' + col + '">' + inrSh(pd.proj) + '</strong><small style="display:block;color:var(--ink-lt);font-size:.68rem">Target: ' + inrSh(pd.target) + ' (' + pct + '%)</small>'; } const hasUserInput = (parseFloat(pr.sip) || 0) > 0 || (parseFloat(pr.lm) || 0) > 0; const addSIP = hasUserInput && pd.addSIP ? '<span style="color:var(--rose);font-weight:600;font-size:.76rem">' + inr(pd.addSIP) + '/mo</span>' : (hasUserInput ? '<span class="cz">-</span>' : '<span class="cz" style="opacity:.3">-</span>'); const addLM = hasUserInput && pd.addLM ? '<span style="color:var(--rose);font-weight:600;font-size:.76rem">' + inr(pd.addLM) + '</span>' : (hasUserInput ? '<span class="cz">-</span>' : '<span class="cz" style="opacity:.3">-</span>'); const sipNoSurplusCls = ((parseFloat(pr.sip) || 0) > 0 && (ST.sipSurplus || 0) === 0) ? ' no-surplus' : ''; const lmNoSurplusCls = ((parseFloat(pr.lm) || 0) > 0 && (ST.lmSurplus || 0) === 0) ? ' no-surplus' : ''; const tr = document.createElement('tr'); tr.innerHTML = '<td style="text-align:center"><strong style="color:var(--gold);font-size:.86rem">P' + (i + 1) + '</strong></td><td><select class="ti" data-pidx="' + i + '" data-pfield="gid" style="max-width:188px">' + opts + '</select></td><td style="font-size:.76rem;color:var(--ink-lt)">' + tDate + '</td><td style="font-size:.76rem;color:var(--teal);font-weight:600">' + rSIPd + '</td><td style="font-size:.76rem;color:var(--teal);font-weight:600">' + rLMd + '</td><td><input class="ti' + sipNoSurplusCls + '" type="number" data-pidx="' + i + '" data-pfield="sip" value="' + (pr.sip || '') + '" min="0" step="500" placeholder="0" style="max-width:105px" autocomplete="off" inputmode="decimal"></td><td><input class="ti' + lmNoSurplusCls + '" type="number" data-pidx="' + i + '" data-pfield="lm" value="' + (pr.lm || '') + '" min="0" step="1000" placeholder="0" style="max-width:105px" autocomplete="off" inputmode="decimal"></td><td>' + projHtml + '</td><td>' + badge + '</td><td>' + addSIP + '</td><td>' + addLM + '</td>'; frag.appendChild(tr); }); tbody.innerHTML = ''; tbody.appendChild(frag); document.getElementById('allocSIP').textContent = inr(allocSIP); document.getElementById('allocLM').textContent = inr(allocLM); updateSurplusWarning(); }
+        function updatePriorityCalcCells() { const s = ST.s; const gmap = buildGoalMap(); let allocSIP = 0, allocLM = 0; const rows = document.querySelectorAll('#priorityBody tr'); rows.forEach((tr, i) => { if (i >= ST.pris.length) return; const pr = ST.pris[i]; allocSIP += parseFloat(pr.sip) || 0; allocLM += parseFloat(pr.lm) || 0; const pd = priCalc(pr, gmap, s); const tds = tr.querySelectorAll('td'); if (tds.length < 11) return; let projHtml = '<span class="cz">-</span>'; if (pd.proj && pd.target) { const pct = (pd.proj / pd.target * 100).toFixed(0); const col = pd.status === 'on' ? 'var(--green)' : 'var(--amber)'; projHtml = '<strong style="color:' + col + '">' + inrSh(pd.proj) + '</strong><small style="display:block;color:var(--ink-lt);font-size:.68rem">Target: ' + inrSh(pd.target) + ' (' + pct + '%)</small>'; } tds[7].innerHTML = projHtml; let badge = '<span class="bdg bdg-na">-</span>'; if (pd.status === 'on') badge = '<span class="bdg bdg-on">On Track</span>'; if (pd.status === 'off') badge = '<span class="bdg bdg-off">Invest More</span>'; tds[8].innerHTML = badge; const hasUserInput = (parseFloat(pr.sip) || 0) > 0 || (parseFloat(pr.lm) || 0) > 0; tds[9].innerHTML = hasUserInput && pd.addSIP ? '<span style="color:var(--rose);font-weight:600;font-size:.76rem">' + inr(pd.addSIP) + '/mo</span>' : (hasUserInput ? '<span class="cz">-</span>' : '<span class="cz" style="opacity:.3">-</span>'); tds[10].innerHTML = hasUserInput && pd.addLM ? '<span style="color:var(--rose);font-weight:600;font-size:.76rem">' + inr(pd.addLM) + '</span>' : (hasUserInput ? '<span class="cz">-</span>' : '<span class="cz" style="opacity:.3">-</span>'); const sipInput = tds[5].querySelector('input'); const lmInput = tds[6].querySelector('input'); if (sipInput) sipInput.classList.toggle('no-surplus', (parseFloat(pr.sip) || 0) > 0 && (ST.sipSurplus || 0) === 0); if (lmInput) lmInput.classList.toggle('no-surplus', (parseFloat(pr.lm) || 0) > 0 && (ST.lmSurplus || 0) === 0); }); document.getElementById('allocSIP').textContent = inr(allocSIP); document.getElementById('allocLM').textContent = inr(allocLM); updateSurplusWarning(); }
+        function buildMobileCards() { const s = ST.s; const gmap = buildGoalMap(); const container = document.getElementById('mobileCards'); if (!container) return; const available = Object.entries(gmap).filter(([, gd]) => gd.target).map(([id, gd]) => ({ id, label: gd.label })); const pickedSet = new Set(ST.pris.map(p => p.gid).filter(Boolean)); container.innerHTML = ''; ST.pris.forEach((pr, i) => { const pd = priCalc(pr, gmap, s); const gd = pr.gid ? gmap[pr.gid] : null; let opts = '<option value="">- select goal -</option>'; available.forEach(ag => { if (pickedSet.has(ag.id) && ag.id !== pr.gid) return; opts += '<option value="' + ag.id + '"' + (ag.id === pr.gid ? ' selected' : '') + '>' + esc(ag.label) + '</option>'; }); let badgeHtml = '<span class="bdg bdg-na" style="font-size:.65rem">-</span>'; if (pd.status === 'on') badgeHtml = '<span class="bdg bdg-on" style="font-size:.65rem">On Track</span>'; if (pd.status === 'off') badgeHtml = '<span class="bdg bdg-off" style="font-size:.65rem">Invest More</span>'; let projStr = '-'; if (pd.proj && pd.target) { const pct = (pd.proj / pd.target * 100).toFixed(0); projStr = inrSh(pd.proj) + ' <span style="color:var(--ink-lt);font-size:.65rem">/ Target: ' + inrSh(pd.target) + ' (' + pct + '%)</span>'; } const rSIPd = gd && gd.rSIP ? inr(gd.rSIP) : '-'; const rLMd = gd && gd.rLM ? inr(gd.rLM) : '-'; const tDate = gd ? gd.date : '-'; const hasInput = (parseFloat(pr.sip) || 0) > 0 || (parseFloat(pr.lm) || 0) > 0; const addSIPstr = hasInput && pd.addSIP ? '<span class="mc-val rose">' + inr(pd.addSIP) + '/mo</span>' : '<span class="mc-val">-</span>'; const addLMstr = hasInput && pd.addLM ? '<span class="mc-val rose">' + inr(pd.addLM) + '</span>' : '<span class="mc-val">-</span>'; const card = document.createElement('div'); card.className = 'mc'; card.innerHTML = '<div class="mc-hdr"><span class="mc-p">P' + (i + 1) + '</span><span class="mc-goal">' + (gd ? esc(gd.label) : 'No goal selected') + '</span>' + badgeHtml + '</div><div class="mc-body"><div style="grid-column:1/-1;margin-bottom:.3rem"><select class="ti mc-sel" data-pidx="' + i + '" data-pfield="gid">' + opts + '</select></div><span class="mc-label">Target Date</span><span class="mc-val">' + tDate + '</span><span class="mc-label">Req. SIP</span><span class="mc-val teal">' + rSIPd + '/mo</span><span class="mc-label">Req. Lump Sum</span><span class="mc-val teal">' + rLMd + '</span><span class="mc-label">Projection</span><span class="mc-val">' + projStr + '</span><span class="mc-label">Addl. SIP Needed</span>' + addSIPstr + '<span class="mc-label">Addl. Lump Sum Needed</span>' + addLMstr + '<div class="mc-inp-row"><div><div class="mc-inp-label">Your SIP</div><input class="ti" type="number" data-pidx="' + i + '" data-pfield="sip" value="' + (pr.sip || '') + '" min="0" step="500" placeholder="0" inputmode="decimal" autocomplete="off"></div><div><div class="mc-inp-label">Your Lump Sum</div><input class="ti" type="number" data-pidx="' + i + '" data-pfield="lm" value="' + (pr.lm || '') + '" min="0" step="1000" placeholder="0" inputmode="decimal" autocomplete="off"></div></div></div>'; container.appendChild(card); }); }
+        function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(window._tt); window._tt = setTimeout(() => t.classList.remove('show'), 2600); }
+        const goalsBody = document.getElementById('goalsBody'); const priorityBody = document.getElementById('priorityBody'); const mobileCards = document.getElementById('mobileCards');
+        goalsBody.addEventListener('input', e => { const el = e.target; const sec = el.dataset.section; const idx = parseInt(el.dataset.idx, 10); const field = el.dataset.field; if (!sec || Number.isNaN(idx) || !field) return; if (sec === 'fixed') { if (idx === 0 && field === 'date') return; ST.fixedGoals[idx][field] = el.value; } else if (sec === 'child') { ST.childGoals[idx][field] = el.value; } else if (sec === 'aspiration') { ST.aspirationGoals[idx][field] = el.value; } if (field === 'date' || field === 'eduDate' || field === 'marryDate') applyDateLockState(el); updateCalcCells(); buildPriority(); buildMobileCards(); saveST(); });
+        goalsBody.addEventListener('click', e => { const addBtn = e.target.closest('[data-addsection]'); if (addBtn) { const sec = addBtn.dataset.addsection; if (sec === 'child') ST.childGoals.push({ childName: '', eduVal: '', eduDate: '', marryVal: '', marryDate: '' }); else if (sec === 'aspiration') ST.aspirationGoals.push({ name: '', val: '', date: '' }); buildGoals(); buildPriority(); buildMobileCards(); saveST(); return; } const delBtn = e.target.closest('.del-btn[data-section][data-idx]'); if (!delBtn) return; const sec = delBtn.dataset.section; const idx = parseInt(delBtn.dataset.idx, 10); if (sec === 'child') { if (ST.childGoals.length <= 1) { toast('At least one child goal group must remain.'); return; } ST.childGoals.splice(idx, 1); } else if (sec === 'aspiration') { if (ST.aspirationGoals.length <= 1) { toast('At least one aspiration goal must remain.'); return; } ST.aspirationGoals.splice(idx, 1); } buildGoals(); buildPriority(); buildMobileCards(); saveST(); });
+        priorityBody.addEventListener('input', e => { const el = e.target; const pi = +el.dataset.pidx; const pf = el.dataset.pfield; if (Number.isNaN(pi) || !pf) return; ST.pris[pi][pf] = el.value; updatePriorityCalcCells(); buildMobileCards(); saveST(); });
+        priorityBody.addEventListener('change', e => { const el = e.target; const pi = +el.dataset.pidx; const pf = el.dataset.pfield; if (Number.isNaN(pi) || !pf || pf !== 'gid') return; ST.pris[pi].sip = ''; ST.pris[pi].lm = ''; ST.pris[pi].gid = el.value; buildPriority(); buildMobileCards(); saveST(); });
+        mobileCards.addEventListener('input', e => { const el = e.target; const pi = +el.dataset.pidx; const pf = el.dataset.pfield; if (Number.isNaN(pi) || !pf || pf === 'gid') return; ST.pris[pi][pf] = el.value; updatePriorityCalcCells(); buildMobileCards(); saveST(); });
+        mobileCards.addEventListener('change', e => { const el = e.target; const pi = +el.dataset.pidx; const pf = el.dataset.pfield; if (Number.isNaN(pi) || !pf || pf !== 'gid') return; ST.pris[pi].sip = ''; ST.pris[pi].lm = ''; ST.pris[pi].gid = el.value; buildPriority(); buildMobileCards(); saveST(); });
+        document.getElementById('sipSurplus').addEventListener('input', e => { ST.sipSurplus = parseFloat(e.target.value) || 0; updateWordsDisplay('sipSurplus', 'sipWords'); saveST(); updatePriorityCalcCells(); buildMobileCards(); });
+        document.getElementById('lmSurplus').addEventListener('input', e => { ST.lmSurplus = parseFloat(e.target.value) || 0; updateWordsDisplay('lmSurplus', 'lmWords'); saveST(); updatePriorityCalcCells(); buildMobileCards(); });
+        document.getElementById('resetBtn').addEventListener('click', () => { if (!confirm('Reset all data to defaults? This clears combined plan data.')) return; localStorage.removeItem(LS_KEY); ST = defState(); document.getElementById('sipSurplus').value = 0; document.getElementById('lmSurplus').value = 0; document.getElementById('sipWords').textContent = ''; document.getElementById('lmWords').textContent = ''; buildGoals(); buildPriority(); buildMobileCards(); toast('All data reset to defaults.'); });
+        document.getElementById('savePdfBtn').addEventListener('click', () => window.print());
+        document.getElementById('sipSurplus').value = ST.sipSurplus; document.getElementById('lmSurplus').value = ST.lmSurplus; updateWordsDisplay('sipSurplus', 'sipWords'); updateWordsDisplay('lmSurplus', 'lmWords'); buildGoals(); buildPriority(); buildMobileCards();
+    </script>
 </body>
+
 </html>
