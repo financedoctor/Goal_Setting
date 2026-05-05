@@ -243,8 +243,8 @@
         .tscroll-goals {
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
-            max-height: calc(100vh - var(--hdr-h) - 120px)
+            overflow-y: visible;
+            max-height: none
         }
 
         .tscroll-goals table {
@@ -252,9 +252,7 @@
         }
 
         .tscroll-goals tfoot {
-            position: sticky;
-            bottom: 0;
-            z-index: 9;
+            position: static;
             background: var(--ink) !important
         }
 
@@ -717,7 +715,7 @@
             }
 
             .tscroll-goals {
-                max-height: calc(100vh - var(--hdr-h) - 10px)
+                max-height: none
             }
         }
 
@@ -768,8 +766,16 @@
                 padding: .85rem .65rem calc(2.5rem + var(--safe-bottom))
             }
 
+            .section-card {
+                overflow: hidden
+            }
+
             .scroll-hint {
                 display: block
+            }
+
+            .tscroll-goals {
+                max-height: none
             }
 
             table {
@@ -807,8 +813,14 @@
             }
 
             .surp {
+                flex-wrap: wrap;
+                align-items: stretch;
                 gap: .5rem;
                 padding: .5rem .65rem
+            }
+
+            .surp-it {
+                flex: 1 1 100%
             }
 
             .surp-it label {
@@ -827,12 +839,26 @@
             .mobile-cards {
                 display: block
             }
+
+            .mc-goal {
+                white-space: normal
+            }
+
+            .mc-body,
+            .mc-inp-row {
+                grid-template-columns: 1fr
+            }
         }
 
         @media(max-width:480px) {
             .tbtn {
                 font-size: .7rem;
                 padding: .38rem .2rem
+            }
+
+            .main {
+                padding-left: .5rem;
+                padding-right: .5rem
             }
 
             .logo {
