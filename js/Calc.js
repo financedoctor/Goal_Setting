@@ -10,6 +10,16 @@ function parseMonths(raw) {
   const s = raw.trim();
   if (s.toLowerCase() === 'immediate') return 1;
 
+  const monthDiffFromToday = (target) => {
+    const today = new Date();
+    today.setDate(1);
+    today.setHours(0, 0, 0, 0);
+    target.setDate(1);
+    target.setHours(0, 0, 0, 0);
+    const diff = (target.getFullYear() - today.getFullYear()) * 12 + (target.getMonth() - today.getMonth());
+    return diff < 0 ? 0 : Math.max(1, diff);
+  };
+
   // Accept "Mon-YYYY" or "MM/YYYY" or full date
   const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
@@ -19,9 +29,7 @@ function parseMonths(raw) {
     const mo = monthNames.findIndex(m => m.toLowerCase() === m1[1].toLowerCase());
     if (mo === -1) return 0;
     const target = new Date(+m1[2], mo, 1);
-    const today  = new Date(); today.setDate(1); today.setHours(0,0,0,0);
-    const diff = (target.getFullYear() - today.getFullYear()) * 12 + (target.getMonth() - today.getMonth());
-    return Math.max(1, diff);
+    return monthDiffFromToday(target);
   }
 
   // Try YYYY-MM or MM/YYYY
@@ -31,18 +39,13 @@ function parseMonths(raw) {
     if (s.includes('-')) { yr = +m2[1]; mo = +m2[2] - 1; }
     else                 { mo = +m2[1] - 1; yr = +m2[2]; }
     const target = new Date(yr, mo, 1);
-    const today  = new Date(); today.setDate(1); today.setHours(0,0,0,0);
-    const diff = (target.getFullYear() - today.getFullYear()) * 12 + (target.getMonth() - today.getMonth());
-    return Math.max(1, diff);
+    return monthDiffFromToday(target);
   }
 
   // Try native date
   const d = new Date(s);
   if (!isNaN(d)) {
-    const today = new Date(); today.setDate(1); today.setHours(0,0,0,0);
-    d.setDate(1);
-    const diff = (d.getFullYear() - today.getFullYear()) * 12 + (d.getMonth() - today.getMonth());
-    return Math.max(1, diff);
+    return monthDiffFromToday(d);
   }
 
   return 0;
@@ -186,7 +189,7 @@ function computePriorityRow(pr, goalData, s) {
 
   if (months === 0 || target === null) return { projection: 0, target: null, status: 'na', addlSIP: null, addlLM: null };
 
-  const projection = calcProjection(months, returnRate * 100, userSIP, userLM);
+  const projection = calcProjection(months, returnRate, userSIP, userLM);
   const onTrack = projection >= target;
 
   // Additional SIP needed (holding LM constant)

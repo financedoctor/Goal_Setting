@@ -715,6 +715,106 @@
             transform: translateX(-50%) translateY(0)
         }
 
+        /* =============================================
+           STICKY FIRST COLUMN — Section 1 (Goals)
+           ============================================= */
+        .goals-tbl th:nth-child(1),
+        .goals-tbl td:nth-child(1) {
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            background: inherit;
+        }
+        .goals-tbl thead th:nth-child(1) {
+            background: var(--ink);
+            z-index: 11;
+        }
+        .goals-tbl tbody tr:hover td:nth-child(1) {
+            background: #fafaf7;
+        }
+        .goals-tbl tbody td:nth-child(1) {
+            background: #fff;
+        }
+        .goals-tbl .grp-row td:nth-child(1) {
+            background: #f0ede6;
+        }
+        .goals-tbl tfoot td:nth-child(1) {
+            background: var(--ink);
+        }
+
+        /* Sticky GOAL NAME column (2nd col) — Section 1 */
+        .goals-tbl th:nth-child(2),
+        .goals-tbl td:nth-child(2) {
+            position: sticky;
+            left: 28px; /* width of col 1 */
+            z-index: 5;
+            background: inherit;
+            box-shadow: 2px 0 6px rgba(0,0,0,.08);
+        }
+        .goals-tbl thead th:nth-child(2) {
+            background: var(--ink);
+            z-index: 11;
+        }
+        .goals-tbl tbody tr:hover td:nth-child(2) {
+            background: #fafaf7;
+        }
+        .goals-tbl tbody td:nth-child(2) {
+            background: #fff;
+        }
+        .goals-tbl .grp-row td:nth-child(2) {
+            background: #f0ede6;
+        }
+        .goals-tbl tfoot td:nth-child(2) {
+            background: var(--ink);
+        }
+
+        /* =============================================
+           STICKY FIRST COLUMN — Section 2 (Priority)
+           ============================================= */
+        .pri-tbl th:nth-child(1),
+        .pri-tbl td:nth-child(1) {
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            background: inherit;
+        }
+        .pri-tbl thead th:nth-child(1) {
+            background: var(--ink);
+            z-index: 11;
+        }
+        .pri-tbl tbody tr:hover td:nth-child(1) {
+            background: #fafaf7;
+        }
+        .pri-tbl tbody td:nth-child(1) {
+            background: #fff;
+        }
+        .pri-tbl tfoot td:nth-child(1) {
+            background: var(--ink);
+        }
+
+        /* Sticky GOAL NAME column (2nd col) — Section 2 */
+        .pri-tbl th:nth-child(2),
+        .pri-tbl td:nth-child(2) {
+            position: sticky;
+            left: 60px; /* width of col 1 */
+            z-index: 5;
+            background: inherit;
+            box-shadow: 2px 0 6px rgba(0,0,0,.08);
+        }
+        .pri-tbl thead th:nth-child(2) {
+            background: var(--ink);
+            z-index: 11;
+        }
+        .pri-tbl tbody tr:hover td:nth-child(2) {
+            background: #fafaf7;
+        }
+        .pri-tbl tbody td:nth-child(2) {
+            background: #fff;
+        }
+        .pri-tbl tfoot td:nth-child(2) {
+            background: var(--ink);
+        }
+
         @media(max-width:1023px) {
             :root {
                 --hdr-h: 56px
@@ -948,6 +1048,19 @@
                 width: 100%
             }
 
+            /* Remove sticky positioning for print */
+            .goals-tbl th:nth-child(1),
+            .goals-tbl td:nth-child(1),
+            .goals-tbl th:nth-child(2),
+            .goals-tbl td:nth-child(2),
+            .pri-tbl th:nth-child(1),
+            .pri-tbl td:nth-child(1),
+            .pri-tbl th:nth-child(2),
+            .pri-tbl td:nth-child(2) {
+                position: static !important;
+                box-shadow: none !important;
+            }
+
             thead th {
                 background: #1a1a2e !important;
                 color: #fff !important;
@@ -1079,7 +1192,7 @@
             <h2 id="section1-title" class="section-title">Section 1 - Goals</h2>
             <p class="section-sub">Define goal values and timelines. Required SIP and lump sum are calculated
                 automatically.</p>
-            <p class="scroll-hint">Scroll horizontally for full table</p>
+            <p class="scroll-hint">Scroll horizontally → Goal column stays fixed</p>
             <div class="tscroll-goals">
                 <table class="goals-tbl">
                     <thead>
@@ -1124,7 +1237,7 @@
             <div class="surp-warning" id="surpWarning"><span class="warn-icon" id="surpWarnIcon">!</span>
                 <div class="warn-lines" id="surpWarningText"></div>
             </div>
-            <p class="scroll-hint">Scroll horizontally for full table</p>
+            <p class="scroll-hint">Scroll horizontally → Goal column stays fixed</p>
             <div class="tscroll-pri">
                 <table class="pri-tbl">
                     <thead>
@@ -1193,17 +1306,182 @@
         function updateSurplusWarning() { const sipAvail = parseFloat(ST.sipSurplus) || 0; const lmAvail = parseFloat(ST.lmSurplus) || 0; let allocSIP = 0, allocLM = 0; ST.pris.forEach(p => { allocSIP += parseFloat(p.sip) || 0; allocLM += parseFloat(p.lm) || 0; }); const warnEl = document.getElementById('surpWarning'); const warnText = document.getElementById('surpWarningText'); const warnIcon = document.getElementById('surpWarnIcon'); const msgs = { orange: [], red: [] }; if (sipAvail === 0 && allocSIP > 0) msgs.orange.push('You entered ' + inr(allocSIP) + '/mo SIP without Monthly SIP Surplus.'); else if (sipAvail > 0 && allocSIP > sipAvail) msgs.red.push('Total SIP ' + inr(allocSIP) + '/mo exceeds surplus ' + inr(sipAvail) + '/mo by ' + inr(allocSIP - sipAvail) + '/mo.'); if (lmAvail === 0 && allocLM > 0) msgs.orange.push('You entered ' + inr(allocLM) + ' lump sum without Lump Sum to Deploy.'); else if (lmAvail > 0 && allocLM > lmAvail) msgs.red.push('Total lump sum ' + inr(allocLM) + ' exceeds declared ' + inr(lmAvail) + ' by ' + inr(allocLM - lmAvail) + '.'); const allMsgs = msgs.red.concat(msgs.orange); if (!allMsgs.length) { warnEl.classList.remove('visible'); return; } if (msgs.red.length) { warnEl.style.background = '#fde8e6'; warnEl.style.borderColor = '#c0392b'; warnEl.style.color = '#7a0e00'; warnIcon.textContent = '!'; } else { warnEl.style.background = '#fff0e6'; warnEl.style.borderColor = '#e07030'; warnEl.style.color = '#7a2e00'; warnIcon.textContent = '!'; } warnText.innerHTML = allMsgs.map(m => '<span>' + m + '</span>').join(''); warnEl.classList.add('visible'); }
         function buildPriority() { const s = ST.s; const tbody = document.getElementById('priorityBody'); const gmap = buildGoalMap(); const available = Object.entries(gmap).filter(([, gd]) => gd.target).map(([id, gd]) => ({ id, label: gd.label })); const pickedSet = new Set(ST.pris.map(p => p.gid).filter(Boolean)); let allocSIP = 0, allocLM = 0; const frag = document.createDocumentFragment(); ST.pris.forEach((pr, i) => { const pd = priCalc(pr, gmap, s); allocSIP += parseFloat(pr.sip) || 0; allocLM += parseFloat(pr.lm) || 0; const gd = pr.gid ? gmap[pr.gid] : null; let opts = '<option value="">- select goal -</option>'; available.forEach(ag => { if (pickedSet.has(ag.id) && ag.id !== pr.gid) return; opts += '<option value="' + ag.id + '"' + (ag.id === pr.gid ? ' selected' : '') + '>' + esc(ag.label) + '</option>'; }); const tDate = gd ? gd.date : '-'; const rSIPd = gd && gd.rSIP ? inr(gd.rSIP) : '-'; const rLMd = gd && gd.rLM ? inr(gd.rLM) : '-'; let badge = '<span class="bdg bdg-na">-</span>'; if (pd.status === 'on') badge = '<span class="bdg bdg-on">On Track</span>'; if (pd.status === 'off') badge = '<span class="bdg bdg-off">Invest More</span>'; let projHtml = '<span class="cz">-</span>'; if (pd.proj && pd.target) { const pct = (pd.proj / pd.target * 100).toFixed(0); const col = pd.status === 'on' ? 'var(--green)' : 'var(--amber)'; projHtml = '<strong style="color:' + col + '">' + inrSh(pd.proj) + '</strong><small style="display:block;color:var(--ink-lt);font-size:.68rem">Target: ' + inrSh(pd.target) + ' (' + pct + '%)</small>'; } const hasUserInput = (parseFloat(pr.sip) || 0) > 0 || (parseFloat(pr.lm) || 0) > 0; const addSIP = hasUserInput && pd.addSIP ? '<span style="color:var(--rose);font-weight:600;font-size:.76rem">' + inr(pd.addSIP) + '/mo</span>' : (hasUserInput ? '<span class="cz">-</span>' : '<span class="cz" style="opacity:.3">-</span>'); const addLM = hasUserInput && pd.addLM ? '<span style="color:var(--rose);font-weight:600;font-size:.76rem">' + inr(pd.addLM) + '</span>' : (hasUserInput ? '<span class="cz">-</span>' : '<span class="cz" style="opacity:.3">-</span>'); const sipNoSurplusCls = ((parseFloat(pr.sip) || 0) > 0 && (ST.sipSurplus || 0) === 0) ? ' no-surplus' : ''; const lmNoSurplusCls = ((parseFloat(pr.lm) || 0) > 0 && (ST.lmSurplus || 0) === 0) ? ' no-surplus' : ''; const tr = document.createElement('tr'); tr.innerHTML = '<td style="text-align:center"><strong style="color:var(--gold);font-size:.86rem">P' + (i + 1) + '</strong></td><td><select class="ti" data-pidx="' + i + '" data-pfield="gid" style="max-width:188px">' + opts + '</select></td><td style="font-size:.76rem;color:var(--ink-lt)">' + tDate + '</td><td style="font-size:.76rem;color:var(--teal);font-weight:600">' + rSIPd + '</td><td style="font-size:.76rem;color:var(--teal);font-weight:600">' + rLMd + '</td><td><input class="ti' + sipNoSurplusCls + '" type="number" data-pidx="' + i + '" data-pfield="sip" value="' + (pr.sip || '') + '" min="0" step="500" placeholder="0" style="max-width:105px" autocomplete="off" inputmode="decimal"></td><td><input class="ti' + lmNoSurplusCls + '" type="number" data-pidx="' + i + '" data-pfield="lm" value="' + (pr.lm || '') + '" min="0" step="1000" placeholder="0" style="max-width:105px" autocomplete="off" inputmode="decimal"></td><td>' + projHtml + '</td><td>' + badge + '</td><td>' + addSIP + '</td><td>' + addLM + '</td>'; frag.appendChild(tr); }); tbody.innerHTML = ''; tbody.appendChild(frag); document.getElementById('allocSIP').textContent = inr(allocSIP); document.getElementById('allocLM').textContent = inr(allocLM); updateSurplusWarning(); }
         function updatePriorityCalcCells() { const s = ST.s; const gmap = buildGoalMap(); let allocSIP = 0, allocLM = 0; const rows = document.querySelectorAll('#priorityBody tr'); rows.forEach((tr, i) => { if (i >= ST.pris.length) return; const pr = ST.pris[i]; allocSIP += parseFloat(pr.sip) || 0; allocLM += parseFloat(pr.lm) || 0; const pd = priCalc(pr, gmap, s); const tds = tr.querySelectorAll('td'); if (tds.length < 11) return; let projHtml = '<span class="cz">-</span>'; if (pd.proj && pd.target) { const pct = (pd.proj / pd.target * 100).toFixed(0); const col = pd.status === 'on' ? 'var(--green)' : 'var(--amber)'; projHtml = '<strong style="color:' + col + '">' + inrSh(pd.proj) + '</strong><small style="display:block;color:var(--ink-lt);font-size:.68rem">Target: ' + inrSh(pd.target) + ' (' + pct + '%)</small>'; } tds[7].innerHTML = projHtml; let badge = '<span class="bdg bdg-na">-</span>'; if (pd.status === 'on') badge = '<span class="bdg bdg-on">On Track</span>'; if (pd.status === 'off') badge = '<span class="bdg bdg-off">Invest More</span>'; tds[8].innerHTML = badge; const hasUserInput = (parseFloat(pr.sip) || 0) > 0 || (parseFloat(pr.lm) || 0) > 0; tds[9].innerHTML = hasUserInput && pd.addSIP ? '<span style="color:var(--rose);font-weight:600;font-size:.76rem">' + inr(pd.addSIP) + '/mo</span>' : (hasUserInput ? '<span class="cz">-</span>' : '<span class="cz" style="opacity:.3">-</span>'); tds[10].innerHTML = hasUserInput && pd.addLM ? '<span style="color:var(--rose);font-weight:600;font-size:.76rem">' + inr(pd.addLM) + '</span>' : (hasUserInput ? '<span class="cz">-</span>' : '<span class="cz" style="opacity:.3">-</span>'); const sipInput = tds[5].querySelector('input'); const lmInput = tds[6].querySelector('input'); if (sipInput) sipInput.classList.toggle('no-surplus', (parseFloat(pr.sip) || 0) > 0 && (ST.sipSurplus || 0) === 0); if (lmInput) lmInput.classList.toggle('no-surplus', (parseFloat(pr.lm) || 0) > 0 && (ST.lmSurplus || 0) === 0); }); document.getElementById('allocSIP').textContent = inr(allocSIP); document.getElementById('allocLM').textContent = inr(allocLM); updateSurplusWarning(); }
-        function buildMobileCards() { const s = ST.s; const gmap = buildGoalMap(); const container = document.getElementById('mobileCards'); if (!container) return; const available = Object.entries(gmap).filter(([, gd]) => gd.target).map(([id, gd]) => ({ id, label: gd.label })); const pickedSet = new Set(ST.pris.map(p => p.gid).filter(Boolean)); container.innerHTML = ''; ST.pris.forEach((pr, i) => { const pd = priCalc(pr, gmap, s); const gd = pr.gid ? gmap[pr.gid] : null; let opts = '<option value="">- select goal -</option>'; available.forEach(ag => { if (pickedSet.has(ag.id) && ag.id !== pr.gid) return; opts += '<option value="' + ag.id + '"' + (ag.id === pr.gid ? ' selected' : '') + '>' + esc(ag.label) + '</option>'; }); let badgeHtml = '<span class="bdg bdg-na" style="font-size:.65rem">-</span>'; if (pd.status === 'on') badgeHtml = '<span class="bdg bdg-on" style="font-size:.65rem">On Track</span>'; if (pd.status === 'off') badgeHtml = '<span class="bdg bdg-off" style="font-size:.65rem">Invest More</span>'; let projStr = '-'; if (pd.proj && pd.target) { const pct = (pd.proj / pd.target * 100).toFixed(0); projStr = inrSh(pd.proj) + ' <span style="color:var(--ink-lt);font-size:.65rem">/ Target: ' + inrSh(pd.target) + ' (' + pct + '%)</span>'; } const rSIPd = gd && gd.rSIP ? inr(gd.rSIP) : '-'; const rLMd = gd && gd.rLM ? inr(gd.rLM) : '-'; const tDate = gd ? gd.date : '-'; const hasInput = (parseFloat(pr.sip) || 0) > 0 || (parseFloat(pr.lm) || 0) > 0; const addSIPstr = hasInput && pd.addSIP ? '<span class="mc-val rose">' + inr(pd.addSIP) + '/mo</span>' : '<span class="mc-val">-</span>'; const addLMstr = hasInput && pd.addLM ? '<span class="mc-val rose">' + inr(pd.addLM) + '</span>' : '<span class="mc-val">-</span>'; const card = document.createElement('div'); card.className = 'mc'; card.innerHTML = '<div class="mc-hdr"><span class="mc-p">P' + (i + 1) + '</span><span class="mc-goal">' + (gd ? esc(gd.label) : 'No goal selected') + '</span>' + badgeHtml + '</div><div class="mc-body"><div style="grid-column:1/-1;margin-bottom:.3rem"><select class="ti mc-sel" data-pidx="' + i + '" data-pfield="gid">' + opts + '</select></div><span class="mc-label">Target Date</span><span class="mc-val">' + tDate + '</span><span class="mc-label">Req. SIP</span><span class="mc-val teal">' + rSIPd + '/mo</span><span class="mc-label">Req. Lump Sum</span><span class="mc-val teal">' + rLMd + '</span><span class="mc-label">Projection</span><span class="mc-val">' + projStr + '</span><span class="mc-label">Addl. SIP Needed</span>' + addSIPstr + '<span class="mc-label">Addl. Lump Sum Needed</span>' + addLMstr + '<div class="mc-inp-row"><div><div class="mc-inp-label">Your SIP</div><input class="ti" type="number" data-pidx="' + i + '" data-pfield="sip" value="' + (pr.sip || '') + '" min="0" step="500" placeholder="0" inputmode="decimal" autocomplete="off"><div class="mc-words" id="mc-sip-words-' + i + '">' + amountWords(pr.sip || '0') + '</div></div><div><div class="mc-inp-label">Your Lump Sum</div><input class="ti" type="number" data-pidx="' + i + '" data-pfield="lm" value="' + (pr.lm || '') + '" min="0" step="1000" placeholder="0" inputmode="decimal" autocomplete="off"><div class="mc-words" id="mc-lm-words-' + i + '">' + amountWords(pr.lm || '0') + '</div></div></div></div>'; container.appendChild(card); }); }
+
+        /* =============================================
+           MOBILE CARDS — Fixed: no full rebuild on input
+           ============================================= */
+        function buildMobileCards() {
+            const s = ST.s;
+            const gmap = buildGoalMap();
+            const container = document.getElementById('mobileCards');
+            if (!container) return;
+            const available = Object.entries(gmap).filter(([, gd]) => gd.target).map(([id, gd]) => ({ id, label: gd.label }));
+            const pickedSet = new Set(ST.pris.map(p => p.gid).filter(Boolean));
+
+            // Track focused element to restore focus after rebuild
+            const activeEl = document.activeElement;
+            const activePidx = activeEl ? activeEl.dataset.pidx : null;
+            const activePfield = activeEl ? activeEl.dataset.pfield : null;
+
+            container.innerHTML = '';
+            ST.pris.forEach((pr, i) => {
+                const pd = priCalc(pr, gmap, s);
+                const gd = pr.gid ? gmap[pr.gid] : null;
+                let opts = '<option value="">- select goal -</option>';
+                available.forEach(ag => {
+                    if (pickedSet.has(ag.id) && ag.id !== pr.gid) return;
+                    opts += '<option value="' + ag.id + '"' + (ag.id === pr.gid ? ' selected' : '') + '>' + esc(ag.label) + '</option>';
+                });
+                let badgeHtml = '<span class="bdg bdg-na" style="font-size:.65rem">-</span>';
+                if (pd.status === 'on') badgeHtml = '<span class="bdg bdg-on" style="font-size:.65rem">On Track</span>';
+                if (pd.status === 'off') badgeHtml = '<span class="bdg bdg-off" style="font-size:.65rem">Invest More</span>';
+                let projStr = '-';
+                if (pd.proj && pd.target) {
+                    const pct = (pd.proj / pd.target * 100).toFixed(0);
+                    projStr = inrSh(pd.proj) + ' <span style="color:var(--ink-lt);font-size:.65rem">/ Target: ' + inrSh(pd.target) + ' (' + pct + '%)</span>';
+                }
+                const rSIPd = gd && gd.rSIP ? inr(gd.rSIP) : '-';
+                const rLMd = gd && gd.rLM ? inr(gd.rLM) : '-';
+                const tDate = gd ? gd.date : '-';
+                const hasInput = (parseFloat(pr.sip) || 0) > 0 || (parseFloat(pr.lm) || 0) > 0;
+                const addSIPstr = hasInput && pd.addSIP ? '<span class="mc-val rose">' + inr(pd.addSIP) + '/mo</span>' : '<span class="mc-val">-</span>';
+                const addLMstr = hasInput && pd.addLM ? '<span class="mc-val rose">' + inr(pd.addLM) + '</span>' : '<span class="mc-val">-</span>';
+                const card = document.createElement('div');
+                card.className = 'mc';
+                card.innerHTML =
+                    '<div class="mc-hdr"><span class="mc-p">P' + (i + 1) + '</span>' +
+                    '<span class="mc-goal">' + (gd ? esc(gd.label) : 'No goal selected') + '</span>' + badgeHtml + '</div>' +
+                    '<div class="mc-body">' +
+                    '<div style="grid-column:1/-1;margin-bottom:.3rem"><select class="ti mc-sel" data-pidx="' + i + '" data-pfield="gid">' + opts + '</select></div>' +
+                    '<span class="mc-label">Target Date</span><span class="mc-val">' + tDate + '</span>' +
+                    '<span class="mc-label">Req. SIP</span><span class="mc-val teal">' + rSIPd + '/mo</span>' +
+                    '<span class="mc-label">Req. Lump Sum</span><span class="mc-val teal">' + rLMd + '</span>' +
+                    '<span class="mc-label">Projection</span><span class="mc-val">' + projStr + '</span>' +
+                    '<span class="mc-label">Addl. SIP Needed</span>' + addSIPstr +
+                    '<span class="mc-label">Addl. Lump Sum Needed</span>' + addLMstr +
+                    '<div class="mc-inp-row">' +
+                        '<div>' +
+                            '<div class="mc-inp-label">Your SIP</div>' +
+                            '<input class="ti" type="number" data-pidx="' + i + '" data-pfield="sip" value="' + (pr.sip || '') + '" min="0" step="500" placeholder="0" inputmode="decimal" autocomplete="off">' +
+                            '<div class="mc-words" id="mc-sip-words-' + i + '">' + amountWords(pr.sip || '0') + '</div>' +
+                        '</div>' +
+                        '<div>' +
+                            '<div class="mc-inp-label">Your Lump Sum</div>' +
+                            '<input class="ti" type="number" data-pidx="' + i + '" data-pfield="lm" value="' + (pr.lm || '') + '" min="0" step="1000" placeholder="0" inputmode="decimal" autocomplete="off">' +
+                            '<div class="mc-words" id="mc-lm-words-' + i + '">' + amountWords(pr.lm || '0') + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '</div>';
+                container.appendChild(card);
+            });
+
+            // Restore focus if it was on a card input
+            if (activePidx !== null && activePfield !== null && activePfield !== 'gid') {
+                const restored = container.querySelector('[data-pidx="' + activePidx + '"][data-pfield="' + activePfield + '"]');
+                if (restored) {
+                    // Use timeout to let DOM settle
+                    setTimeout(() => {
+                        restored.focus();
+                        // Place cursor at end
+                        const len = restored.value.length;
+                        try { restored.setSelectionRange(len, len); } catch(e) {}
+                    }, 0);
+                }
+            }
+        }
+
+        /* Update only the computed/display parts of mobile cards without rebuilding inputs */
+        function updateMobileCardsCalc() {
+            const s = ST.s;
+            const gmap = buildGoalMap();
+            const container = document.getElementById('mobileCards');
+            if (!container) return;
+            const cards = container.querySelectorAll('.mc');
+            cards.forEach((card, i) => {
+                if (i >= ST.pris.length) return;
+                const pr = ST.pris[i];
+                const pd = priCalc(pr, gmap, s);
+                const gd = pr.gid ? gmap[pr.gid] : null;
+
+                // Update header badge
+                const badgeEl = card.querySelector('.mc-hdr .bdg');
+                if (badgeEl) {
+                    if (pd.status === 'on') { badgeEl.className = 'bdg bdg-on'; badgeEl.style.fontSize = '.65rem'; badgeEl.textContent = 'On Track'; }
+                    else if (pd.status === 'off') { badgeEl.className = 'bdg bdg-off'; badgeEl.style.fontSize = '.65rem'; badgeEl.textContent = 'Invest More'; }
+                    else { badgeEl.className = 'bdg bdg-na'; badgeEl.style.fontSize = '.65rem'; badgeEl.textContent = '-'; }
+                }
+
+                // Update goal label in header
+                const goalLabelEl = card.querySelector('.mc-goal');
+                if (goalLabelEl) goalLabelEl.textContent = gd ? gd.label : 'No goal selected';
+
+                // Update all mc-val spans (target date, req SIP, req LM, projection, addl fields)
+                const mcVals = card.querySelectorAll('.mc-val');
+                const rSIPd = gd && gd.rSIP ? inr(gd.rSIP) : '-';
+                const rLMd = gd && gd.rLM ? inr(gd.rLM) : '-';
+                const tDate = gd ? gd.date : '-';
+                let projStr = '-';
+                if (pd.proj && pd.target) {
+                    const pct = (pd.proj / pd.target * 100).toFixed(0);
+                    projStr = inrSh(pd.proj) + ' / Target: ' + inrSh(pd.target) + ' (' + pct + '%)';
+                }
+                const hasInput = (parseFloat(pr.sip) || 0) > 0 || (parseFloat(pr.lm) || 0) > 0;
+                // mcVals order: [0]=tDate, [1]=reqSIP, [2]=reqLM, [3]=projection, [4]=addSIP, [5]=addLM
+                if (mcVals[0]) mcVals[0].textContent = tDate;
+                if (mcVals[1]) { mcVals[1].textContent = rSIPd + '/mo'; mcVals[1].className = 'mc-val teal'; }
+                if (mcVals[2]) { mcVals[2].textContent = rLMd; mcVals[2].className = 'mc-val teal'; }
+                if (mcVals[3]) mcVals[3].textContent = projStr;
+                if (mcVals[4]) {
+                    if (hasInput && pd.addSIP) { mcVals[4].className = 'mc-val rose'; mcVals[4].textContent = inr(pd.addSIP) + '/mo'; }
+                    else { mcVals[4].className = 'mc-val'; mcVals[4].textContent = '-'; }
+                }
+                if (mcVals[5]) {
+                    if (hasInput && pd.addLM) { mcVals[5].className = 'mc-val rose'; mcVals[5].textContent = inr(pd.addLM); }
+                    else { mcVals[5].className = 'mc-val'; mcVals[5].textContent = '-'; }
+                }
+
+                // Update words displays
+                const sipWords = document.getElementById('mc-sip-words-' + i);
+                if (sipWords) sipWords.textContent = amountWords(pr.sip || '0');
+                const lmWords = document.getElementById('mc-lm-words-' + i);
+                if (lmWords) lmWords.textContent = amountWords(pr.lm || '0');
+            });
+        }
+
         function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(window._tt); window._tt = setTimeout(() => t.classList.remove('show'), 2600); }
         const goalsBody = document.getElementById('goalsBody'); const priorityBody = document.getElementById('priorityBody'); const mobileCards = document.getElementById('mobileCards');
-        goalsBody.addEventListener('input', e => { const el = e.target; const sec = el.dataset.section; const idx = parseInt(el.dataset.idx, 10); const field = el.dataset.field; if (!sec || Number.isNaN(idx) || !field) return; if (sec === 'fixed') { if (idx === 0 && field === 'date') return; ST.fixedGoals[idx][field] = el.value; } else if (sec === 'child') { ST.childGoals[idx][field] = el.value; } else if (sec === 'aspiration') { ST.aspirationGoals[idx][field] = el.value; } if (field === 'date' || field === 'eduDate' || field === 'marryDate') applyDateLockState(el); updateCalcCells(); buildPriority(); buildMobileCards(); saveST(); });
+        goalsBody.addEventListener('input', e => { const el = e.target; const sec = el.dataset.section; const idx = parseInt(el.dataset.idx, 10); const field = el.dataset.field; if (!sec || Number.isNaN(idx) || !field) return; if (sec === 'fixed') { if (idx === 0 && field === 'date') return; ST.fixedGoals[idx][field] = el.value; } else if (sec === 'child') { ST.childGoals[idx][field] = el.value; } else if (sec === 'aspiration') { ST.aspirationGoals[idx][field] = el.value; } if (field === 'date' || field === 'eduDate' || field === 'marryDate') applyDateLockState(el); updateCalcCells(); buildPriority(); updateMobileCardsCalc(); saveST(); });
         goalsBody.addEventListener('click', e => { const addBtn = e.target.closest('[data-addsection]'); if (addBtn) { const sec = addBtn.dataset.addsection; if (sec === 'child') ST.childGoals.push({ childName: '', eduVal: '', eduDate: '', marryVal: '', marryDate: '' }); else if (sec === 'aspiration') ST.aspirationGoals.push({ name: '', val: '', date: '' }); buildGoals(); buildPriority(); buildMobileCards(); saveST(); return; } const delBtn = e.target.closest('.del-btn[data-section][data-idx]'); if (!delBtn) return; const sec = delBtn.dataset.section; const idx = parseInt(delBtn.dataset.idx, 10); if (sec === 'child') { if (ST.childGoals.length <= 1) { toast('At least one child goal group must remain.'); return; } ST.childGoals.splice(idx, 1); } else if (sec === 'aspiration') { if (ST.aspirationGoals.length <= 1) { toast('At least one aspiration goal must remain.'); return; } ST.aspirationGoals.splice(idx, 1); } buildGoals(); buildPriority(); buildMobileCards(); saveST(); });
-        priorityBody.addEventListener('input', e => { const el = e.target; const pi = +el.dataset.pidx; const pf = el.dataset.pfield; if (Number.isNaN(pi) || !pf) return; ST.pris[pi][pf] = el.value; updatePriorityCalcCells(); buildMobileCards(); saveST(); });
+
+        /* Priority body — on input: update state + calc cells only (no full mobile rebuild) */
+        priorityBody.addEventListener('input', e => {
+            const el = e.target; const pi = +el.dataset.pidx; const pf = el.dataset.pfield;
+            if (Number.isNaN(pi) || !pf) return;
+            ST.pris[pi][pf] = el.value;
+            updatePriorityCalcCells();
+            updateMobileCardsCalc();
+            saveST();
+        });
         priorityBody.addEventListener('change', e => { const el = e.target; const pi = +el.dataset.pidx; const pf = el.dataset.pfield; if (Number.isNaN(pi) || !pf || pf !== 'gid') return; ST.pris[pi].sip = ''; ST.pris[pi].lm = ''; ST.pris[pi].gid = el.value; buildPriority(); buildMobileCards(); saveST(); });
-        mobileCards.addEventListener('input', e => { const el = e.target; const pi = +el.dataset.pidx; const pf = el.dataset.pfield; if (Number.isNaN(pi) || !pf || pf === 'gid') return; ST.pris[pi][pf] = el.value; if (pf === 'sip' || pf === 'lm') { const wordsId = 'mc-' + pf + '-words-' + pi; const wordsEl = document.getElementById(wordsId); if (wordsEl) wordsEl.textContent = amountWords(el.value || '0'); } updatePriorityCalcCells(); buildMobileCards(); saveST(); });
+
+        /* Mobile cards — on input: update state + lightweight calc update only (no rebuild) */
+        mobileCards.addEventListener('input', e => {
+            const el = e.target; const pi = +el.dataset.pidx; const pf = el.dataset.pfield;
+            if (Number.isNaN(pi) || !pf || pf === 'gid') return;
+            ST.pris[pi][pf] = el.value;
+            // Update words display inline without rebuilding
+            if (pf === 'sip' || pf === 'lm') {
+                const wordsEl = document.getElementById('mc-' + pf + '-words-' + pi);
+                if (wordsEl) wordsEl.textContent = amountWords(el.value || '0');
+            }
+            updatePriorityCalcCells();
+            updateMobileCardsCalc();
+            saveST();
+        });
         mobileCards.addEventListener('change', e => { const el = e.target; const pi = +el.dataset.pidx; const pf = el.dataset.pfield; if (Number.isNaN(pi) || !pf || pf !== 'gid') return; ST.pris[pi].sip = ''; ST.pris[pi].lm = ''; ST.pris[pi].gid = el.value; buildPriority(); buildMobileCards(); saveST(); });
-        document.getElementById('sipSurplus').addEventListener('input', e => { ST.sipSurplus = parseFloat(e.target.value) || 0; updateWordsDisplay('sipSurplus', 'sipWords'); saveST(); updatePriorityCalcCells(); buildMobileCards(); });
-        document.getElementById('lmSurplus').addEventListener('input', e => { ST.lmSurplus = parseFloat(e.target.value) || 0; updateWordsDisplay('lmSurplus', 'lmWords'); saveST(); updatePriorityCalcCells(); buildMobileCards(); });
+
+        document.getElementById('sipSurplus').addEventListener('input', e => { ST.sipSurplus = parseFloat(e.target.value) || 0; updateWordsDisplay('sipSurplus', 'sipWords'); saveST(); updatePriorityCalcCells(); updateMobileCardsCalc(); });
+        document.getElementById('lmSurplus').addEventListener('input', e => { ST.lmSurplus = parseFloat(e.target.value) || 0; updateWordsDisplay('lmSurplus', 'lmWords'); saveST(); updatePriorityCalcCells(); updateMobileCardsCalc(); });
         document.getElementById('resetBtn').addEventListener('click', () => { if (!confirm('Reset all data to defaults? This clears combined plan data.')) return; localStorage.removeItem(LS_KEY); ST = defState(); document.getElementById('sipSurplus').value = 0; document.getElementById('lmSurplus').value = 0; document.getElementById('sipWords').textContent = ''; document.getElementById('lmWords').textContent = ''; buildGoals(); buildPriority(); buildMobileCards(); toast('All data reset to defaults.'); });
         document.getElementById('savePdfBtn').addEventListener('click', () => window.print());
         document.getElementById('sipSurplus').value = ST.sipSurplus; document.getElementById('lmSurplus').value = ST.lmSurplus; updateWordsDisplay('sipSurplus', 'sipWords'); updateWordsDisplay('lmSurplus', 'lmWords'); buildGoals(); buildPriority(); buildMobileCards();
