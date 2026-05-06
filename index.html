@@ -705,78 +705,36 @@
         }
 
         /* =============================================
-           STICKY COLUMNS — Section 1 (Goals)
-           Only col 1 (#) and col 2 (Goal) are sticky.
-           All other columns scroll freely.
+           STICKY GOAL COLUMN — only the Goal name (2nd column)
            ============================================= */
-        .goals-tbl th:nth-child(1),
-        .goals-tbl td:nth-child(1) {
-            position: sticky;
-            left: 0;
-            z-index: 5;
-            background: inherit;
-        }
-        .goals-tbl thead th:nth-child(1) {
-            background: var(--ink);
-            z-index: 11;
-        }
-        .goals-tbl tbody tr:hover td:nth-child(1) { background: #fafaf7; }
-        .goals-tbl tbody td:nth-child(1)           { background: #fff; }
-        .goals-tbl .grp-row td:nth-child(1)        { background: #f0ede6; }
-        .goals-tbl tfoot td:nth-child(1)            { background: var(--ink); }
-
-        /* Goal Name column (2nd) — sticky, shadow to indicate freeze */
+        /* Section 1: keep only the Goal column sticky (2nd col). The index (#) column will scroll away.
+           This prevents multiple columns from occupying the left edge and keeps the Goal label fixed. */
         .goals-tbl th:nth-child(2),
         .goals-tbl td:nth-child(2) {
             position: sticky;
-            left: 28px;   /* width of #-column */
-            z-index: 5;
+            left: 0;
+            z-index: 6;
             background: inherit;
-            box-shadow: 2px 0 6px rgba(0,0,0,.10);
+            box-shadow: 2px 0 6px rgba(0,0,0,.06);
         }
         .goals-tbl thead th:nth-child(2) {
             background: var(--ink);
             z-index: 11;
         }
-        .goals-tbl tbody tr:hover td:nth-child(2) { background: #fafaf7; }
-        .goals-tbl tbody td:nth-child(2)           { background: #fff; }
-        .goals-tbl .grp-row td:nth-child(2)        { background: #f0ede6; }
-        .goals-tbl tfoot td:nth-child(2)            { background: var(--ink); }
 
-        /* =============================================
-           STICKY COLUMNS — Section 2 (Priority)
-           Only col 1 (Priority) and col 2 (Goal Name).
-           ============================================= */
-        .pri-tbl th:nth-child(1),
-        .pri-tbl td:nth-child(1) {
-            position: sticky;
-            left: 0;
-            z-index: 5;
-            background: inherit;
-        }
-        .pri-tbl thead th:nth-child(1) {
-            background: var(--ink);
-            z-index: 11;
-        }
-        .pri-tbl tbody tr:hover td:nth-child(1) { background: #fafaf7; }
-        .pri-tbl tbody td:nth-child(1)           { background: #fff; }
-        .pri-tbl tfoot td:nth-child(1)            { background: var(--ink); }
-
+        /* Section 2 (Priority): make only the Goal Name column sticky (2nd col) */
         .pri-tbl th:nth-child(2),
         .pri-tbl td:nth-child(2) {
             position: sticky;
-            left: 60px;   /* width of Priority column */
-            z-index: 5;
+            left: 0;
+            z-index: 6;
             background: inherit;
-            box-shadow: 2px 0 6px rgba(0,0,0,.10);
+            box-shadow: 2px 0 6px rgba(0,0,0,.06);
         }
         .pri-tbl thead th:nth-child(2) {
             background: var(--ink);
             z-index: 11;
         }
-        .pri-tbl tbody tr:hover td:nth-child(2) { background: #fafaf7; }
-        .pri-tbl tbody td:nth-child(2)           { background: #fff; }
-        .pri-tbl tfoot td:nth-child(2)            { background: var(--ink); }
 
         @media(max-width:1023px) {
             :root { --hdr-h: 56px }
@@ -833,18 +791,14 @@
             .pri-tbl  th, .pri-tbl  td {
                 padding: .35rem .32rem
             }
-            /* Remove sticky on small screens — mobile uses card view for section 2 */
+            /* On small screens: keep only the Goal Name (2nd col) sticky; let the index/priority column scroll away */
             .goals-tbl th:nth-child(1),
             .goals-tbl td:nth-child(1),
-            .goals-tbl th:nth-child(2),
-            .goals-tbl td:nth-child(2),
             .pri-tbl  th:nth-child(1),
-            .pri-tbl  td:nth-child(1),
-            .pri-tbl  th:nth-child(2),
-            .pri-tbl  td:nth-child(2) {
+            .pri-tbl  td:nth-child(1) {
                 position: static !important;
                 left: auto !important;
-                box-shadow: none !important
+                box-shadow: none !important;
             }
             .scroll-hint { display: block }
             table        { font-size: .74rem }
