@@ -242,18 +242,24 @@
             box-shadow: var(--s1);
             background: #fff;
             margin-bottom: .6rem;
-            -webkit-overflow-scrolling: touch
+            -webkit-overflow-scrolling: touch;
+            -webkit-transform: translate(0,0);
+            transform: translate(0,0);
+            overflow-y: hidden
         }
 
         .tscroll-goals {
             display: flex;
             flex-direction: column;
             overflow-y: visible;
-            max-height: none
+            max-height: none;
+            scroll-behavior: smooth
         }
 
         .tscroll-goals table {
-            flex: 1
+            flex: 1;
+            border-collapse: separate;
+            border-spacing: 0
         }
 
         .tscroll-goals tfoot {
@@ -838,6 +844,43 @@
         @media(max-width:767px) {
             html {
                 scroll-padding-top: 120px
+            }
+
+            /* On mobile: lock the scrollable container to prevent accidental scrolling of sticky cols */
+            .tscroll-goals {
+                overflow-x: hidden !important;
+                overflow-y: hidden !important
+            }
+
+            .tscroll-pri {
+                overflow-x: hidden !important;
+                overflow-y: hidden !important
+            }
+
+            .goals-tbl,
+            .pri-tbl {
+                font-size: .72rem;
+                min-width: auto !important
+            }
+
+            .goals-tbl th,
+            .goals-tbl td,
+            .pri-tbl th,
+            .pri-tbl td {
+                padding: .35rem .32rem
+            }
+
+            .goals-tbl th:nth-child(1),
+            .goals-tbl td:nth-child(1),
+            .goals-tbl th:nth-child(2),
+            .goals-tbl td:nth-child(2),
+            .pri-tbl th:nth-child(1),
+            .pri-tbl td:nth-child(1),
+            .pri-tbl th:nth-child(2),
+            .pri-tbl td:nth-child(2) {
+                position: static !important;
+                left: auto !important;
+                box-shadow: none !important
             }
 
             .hdr-in {
@@ -1466,8 +1509,11 @@
 
         /* Mobile cards — on input: update state + lightweight calc update only (no rebuild) */
         mobileCards.addEventListener('input', e => {
-            const el = e.target; const pi = +el.dataset.pidx; const pf = el.dataset.pfield;
-            if (Number.isNaN(pi) || !pf || pf === 'gid') return;
+            const el = e.target; 
+            const pi = el.dataset.pidx ? +el.dataset.pidx : null;
+            const pf = el.dataset.pfield;
+            if (pi === null || Number.isNaN(pi) || !pf || pf === 'gid') return;
+            if (pi >= ST.pris.length) return;
             ST.pris[pi][pf] = el.value;
             // Update words display inline without rebuilding
             if (pf === 'sip' || pf === 'lm') {
@@ -1477,8 +1523,15 @@
             updatePriorityCalcCells();
             updateMobileCardsCalc();
             saveST();
-        });
-        mobileCards.addEventListener('change', e => { const el = e.target; const pi = +el.dataset.pidx; const pf = el.dataset.pfield; if (Number.isNaN(pi) || !pf || pf !== 'gid') return; ST.pris[pi].sip = ''; ST.pris[pi].lm = ''; ST.pris[pi].gid = el.value; buildPriority(); buildMobileCards(); saveST(); });
+        }, true);
+        mobileCards.addEventListener('change', e => { 
+            const el = e.target; 
+            const pi = el.dataset.pidx ? +el.dataset.pidx : null;
+            const pf = el.dataset.pfield; 
+            if (pi === null || Number.isNaN(pi) || !pf || pf !== 'gid') return; 
+            if (pi >= ST.pris.length) return;
+            ST.pris[pi].sip = ''; ST.pris[pi].lm = ''; ST.pris[pi].gid = el.value; buildPriority(); buildMobileCards(); saveST(); 
+        }, true);
 
         document.getElementById('sipSurplus').addEventListener('input', e => { ST.sipSurplus = parseFloat(e.target.value) || 0; updateWordsDisplay('sipSurplus', 'sipWords'); saveST(); updatePriorityCalcCells(); updateMobileCardsCalc(); });
         document.getElementById('lmSurplus').addEventListener('input', e => { ST.lmSurplus = parseFloat(e.target.value) || 0; updateWordsDisplay('lmSurplus', 'lmWords'); saveST(); updatePriorityCalcCells(); updateMobileCardsCalc(); });
